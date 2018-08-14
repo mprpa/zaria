@@ -4,9 +4,10 @@ import {
     withRouter
 } from 'react-router-dom';
 import './AppHeader.css';
-import pollIcon from '../logo.png';
+import logo from '../logo.png';
 import { Layout, Menu, Dropdown, Icon } from 'antd';
 const Header = Layout.Header;
+const SubMenu = Menu.SubMenu;
     
 class AppHeader extends Component {
     constructor(props) {
@@ -22,40 +23,54 @@ class AppHeader extends Component {
 
     render() {
         let menuItems;
-        if(this.props.currentUser) {
-          menuItems = [
-            <Menu.Item key="/">
-              <Link to="/">
-                <Icon type="home" className="nav-icon" />
-              </Link>
-            </Menu.Item>,
-            <Menu.Item key="/poll/new">
-            <Link to="/poll/new">
-              <img src={pollIcon} alt="poll" className="poll-icon" />
-            </Link>
-          </Menu.Item>,
-          <Menu.Item key="/profile" className="profile-menu">
-                <ProfileDropdownMenu 
-                  currentUser={this.props.currentUser} 
-                  handleMenuClick={this.handleMenuClick}/>
-            </Menu.Item>
-          ]; 
+        if (this.props.currentUser) {
+            menuItems = [
+                <Menu.Item key="/">
+                    <Link to="/">
+                        <Icon type="home" className="nav-icon"/>
+                    </Link>
+                </Menu.Item>,
+                <Menu.Item key="/poll/new">
+                    <Link to="/poll/new">
+                        {/*<img src={pollIcon} alt="poll" className="poll-icon"/>*/}
+                    </Link>
+                </Menu.Item>,
+                <Menu.Item key="/profile" className="profile-menu">
+                    <ProfileDropdownMenu
+                        currentUser={this.props.currentUser}
+                        handleMenuClick={this.handleMenuClick}/>
+                </Menu.Item>,
+                <Menu.Item key="/aboutus">
+                    <Link to="/aboutus">About us</Link>
+                </Menu.Item>
+            ];
         } else {
-          menuItems = [
-            <Menu.Item key="/login">
-              <Link to="/login">Login</Link>
-            </Menu.Item>,
-            <Menu.Item key="/signup">
-              <Link to="/signup">Signup</Link>
-            </Menu.Item>                  
-          ];
+            menuItems = [
+                <Menu.Item key="/login">
+                    <Link to="/login">Login</Link>
+                </Menu.Item>,
+                <SubMenu title={<span>Register</span>} key="/register">
+                    <Menu.Item key="/signup">
+                        <Link to="/signup">Register user</Link>
+                    </Menu.Item>
+                    <Menu.Item key="/signuplegal">
+                        <Link to="/signuplegal">Register company</Link>
+                    </Menu.Item>
+                </SubMenu>,
+                <Menu.Item key="/aboutus">
+                    <Link to="/aboutus">About us</Link>
+                </Menu.Item>
+
+            ];
         }
 
         return (
             <Header className="app-header">
             <div className="container">
               <div className="app-title" >
-                <Link to="/">Polling App</Link>
+                <Link to="/">
+                    <img src={logo} alt="logo" className="poll-icon"/>
+                </Link>
               </div>
               <Menu
                 className="app-menu"
@@ -85,6 +100,9 @@ function ProfileDropdownMenu(props) {
       <Menu.Item key="profile" className="dropdown-item">
         <Link to={`/users/${props.currentUser.username}`}>Profile</Link>
       </Menu.Item>
+        <Menu.Item key="edit" className="dropdown-item">
+            <Link to={`/users/${props.currentUser.username}/edit`}>Edit profile</Link>
+        </Menu.Item>
       <Menu.Item key="logout" className="dropdown-item">
         Logout
       </Menu.Item>

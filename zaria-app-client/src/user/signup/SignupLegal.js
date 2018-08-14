@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
-import { signup, checkUsernameAvailability, checkEmailAvailability } from '../../util/APIUtils';
+import { signupLegal, checkUsernameAvailability, checkEmailAvailability } from '../../util/APIUtils';
 import './Signup.css';
 import { Link } from 'react-router-dom';
-import { 
-    NAME_MIN_LENGTH, NAME_MAX_LENGTH, 
+import {
+    NAME_MIN_LENGTH, NAME_MAX_LENGTH,
     USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH,
     EMAIL_MAX_LENGTH,
     PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH,
     ADDRESS_MIN_LENGTH, ADDRESS_MAX_LENGTH,
-    PHONENUM_MIN_LENGTH, PHONENUM_MAX_LENGTH
+    PHONENUM_MIN_LENGTH, PHONENUM_MAX_LENGTH,
+    TIN_MIN_LENGTH, TIN_MAX_LENGTH
 } from '../../constants';
 
 import { Form, Input, Select, Button, notification } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class Signup extends Component {
+class SignupLegal extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,6 +37,9 @@ class Signup extends Component {
             },
             phoneNumber: {
                 value: ''
+            },
+            tin : {
+                value: ''
             }
         }
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -47,7 +51,7 @@ class Signup extends Component {
 
     handleInputChange(event, validationFun) {
         const target = event.target;
-        const inputName = target.name;        
+        const inputName = target.name;
         const inputValue = target.value;
 
         this.setState({
@@ -60,17 +64,18 @@ class Signup extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-    
+
         const signupRequest = {
             name: this.state.name.value,
             email: this.state.email.value,
             username: this.state.username.value,
             password: this.state.password.value,
             address: this.state.address.value,
-            phoneNumber: this.state.phoneNumber.value
+            phoneNumber: this.state.phoneNumber.value,
+            tin: this.state.tin.value
         };
 
-        signup(signupRequest)
+        signupLegal(signupRequest)
             .then(response => {
                 notification.success({
                     message: 'Zaria fashion',
@@ -117,17 +122,17 @@ class Signup extends Component {
                 <h1 className="page-title">Sign Up</h1>
                 <div className="signup-content">
                     <Form onSubmit={this.handleSubmit} className="signup-form">
-                        <FormItem 
-                            label="Full Name"
+                        <FormItem
+                            label="Company Name"
                             validateStatus={this.state.name.validateStatus}
                             help={this.state.name.errorMsg}>
-                            <Input 
+                            <Input
                                 size="large"
                                 name="name"
                                 autoComplete="off"
-                                placeholder="Your full name"
-                                value={this.state.name.value} 
-                                onChange={(event) => this.handleInputChange(event, this.validateName)} />    
+                                placeholder="Company's full name"
+                                value={this.state.name.value}
+                                onChange={(event) => this.handleInputChange(event, this.validateName)} />
                         </FormItem>
                         <FormItem
                             label="Address"
@@ -137,7 +142,7 @@ class Signup extends Component {
                                 size="large"
                                 name="address"
                                 autoComplete="off"
-                                placeholder="Your address"
+                                placeholder="Company's registered address"
                                 value={this.state.address.value}
                                 onChange={(event) => this.handleInputChange(event, this.validateAddress)} />
                         </FormItem>
@@ -150,57 +155,69 @@ class Signup extends Component {
                                 size="large"
                                 name="phoneNumber"
                                 autoComplete="off"
-                                placeholder="Your phone number"
+                                placeholder="Company's phone number"
                                 value={this.state.phoneNumber.value}
                                 onChange={(event) => this.handleInputChange(event, this.validatePhoneNumber)} />
                         </FormItem>
-                        <FormItem label="Username"
-                            hasFeedback
-                            validateStatus={this.state.username.validateStatus}
-                            help={this.state.username.errorMsg}>
-                            <Input 
+                        <FormItem
+                            label="Taxpayer Identification Number"
+                            validateStatus={this.state.tin.validateStatus}
+                            help={this.state.tin.errorMsg}>
+                            <Input
                                 size="large"
-                                name="username" 
+                                name="tin"
+                                autoComplete="off"
+                                placeholder="Taxpayer Identification Number"
+                                value={this.state.tin.value}
+                                onChange={(event) => this.handleInputChange(event, this.validateTin)} />
+                        </FormItem>
+                        <FormItem label="Username"
+                                  hasFeedback
+                                  validateStatus={this.state.username.validateStatus}
+                                  help={this.state.username.errorMsg}>
+                            <Input
+                                size="large"
+                                name="username"
                                 autoComplete="off"
                                 placeholder="A unique username"
-                                value={this.state.username.value} 
+                                value={this.state.username.value}
                                 onBlur={this.validateUsernameAvailability}
-                                onChange={(event) => this.handleInputChange(event, this.validateUsername)} />    
+                                onChange={(event) => this.handleInputChange(event, this.validateUsername)} />
                         </FormItem>
-                        <FormItem 
+                        <FormItem
                             label="Email"
                             hasFeedback
                             validateStatus={this.state.email.validateStatus}
                             help={this.state.email.errorMsg}>
-                            <Input 
+                            <Input
                                 size="large"
-                                name="email" 
-                                type="email" 
+                                name="email"
+                                type="email"
                                 autoComplete="off"
-                                placeholder="Your email"
-                                value={this.state.email.value} 
+                                placeholder="Company's email"
+                                value={this.state.email.value}
                                 onBlur={this.validateEmailAvailability}
-                                onChange={(event) => this.handleInputChange(event, this.validateEmail)} />    
+                                onChange={(event) => this.handleInputChange(event, this.validateEmail)} />
                         </FormItem>
-                        <FormItem 
+                        <FormItem
                             label="Password"
                             validateStatus={this.state.password.validateStatus}
                             help={this.state.password.errorMsg}>
-                            <Input 
+                            <Input
                                 size="large"
-                                name="password" 
+                                name="password"
                                 type="password"
                                 autoComplete="off"
-                                placeholder="A password between 6 to 20 characters" 
-                                value={this.state.password.value} 
-                                onChange={(event) => this.handleInputChange(event, this.validatePassword)} />    
+                                placeholder="A password between 6 to 20 characters"
+                                value={this.state.password.value}
+                                onChange={(event) => this.handleInputChange(event, this.validatePassword)} />
                         </FormItem>
                         <FormItem>
-                            <Button type="primary" 
-                                htmlType="submit" 
-                                size="large" 
-                                className="signup-form-button"
-                                disabled={this.isFormInvalid()}>Sign up</Button>
+                            <Button type="primary"
+                                    htmlType="submit"
+                                    size="large"
+                                    className="signup-form-button"
+                                    disabled={this.isFormInvalid()}>Sign up</Button>
                             Already registed? <Link to="/login">Login now!</Link>
                         </FormItem>
                     </Form>
@@ -226,7 +243,7 @@ class Signup extends Component {
             return {
                 validateStatus: 'success',
                 errorMsg: null,
-              };            
+            };
         }
     }
 
@@ -275,11 +292,37 @@ class Signup extends Component {
         }
     }
 
+    validateTin = (tin) => {
+        if(tin.length < TIN_MIN_LENGTH) {
+            return {
+                validateStatus: 'error',
+                errorMsg: `Tax identification number is too short (Minimum ${TIN_MIN_LENGTH} characters needed.)`
+            }
+        } else if (tin.length > TIN_MAX_LENGTH) {
+            return {
+                validationStatus: 'error',
+                errorMsg: `Tax identification number is too long (Maximum ${TIN_MAX_LENGTH} characters allowed.)`
+            }
+        } else {
+            const TIN_REGEX = RegExp('[0-9]{9}$');
+            if(!TIN_REGEX.test(tin)) {
+                return {
+                    validateStatus: 'error',
+                    errorMsg: 'Tax identification number not valid'
+                }
+            }
+            return {
+                validateStatus: 'success',
+                errorMsg: null,
+            };
+        }
+    }
+
     validateEmail = (email) => {
         if(!email) {
             return {
                 validateStatus: 'error',
-                errorMsg: 'Email may not be empty'                
+                errorMsg: 'Email may not be empty'
             }
         }
 
@@ -347,25 +390,25 @@ class Signup extends Component {
         });
 
         checkUsernameAvailability(usernameValue)
-        .then(response => {
-            if(response.available) {
-                this.setState({
-                    username: {
-                        value: usernameValue,
-                        validateStatus: 'success',
-                        errorMsg: null
-                    }
-                });
-            } else {
-                this.setState({
-                    username: {
-                        value: usernameValue,
-                        validateStatus: 'error',
-                        errorMsg: 'This username is already taken'
-                    }
-                });
-            }
-        }).catch(error => {
+            .then(response => {
+                if(response.available) {
+                    this.setState({
+                        username: {
+                            value: usernameValue,
+                            validateStatus: 'success',
+                            errorMsg: null
+                        }
+                    });
+                } else {
+                    this.setState({
+                        username: {
+                            value: usernameValue,
+                            validateStatus: 'error',
+                            errorMsg: 'This username is already taken'
+                        }
+                    });
+                }
+            }).catch(error => {
             // Marking validateStatus as success, Form will be recchecked at server
             this.setState({
                 username: {
@@ -388,7 +431,7 @@ class Signup extends Component {
                     value: emailValue,
                     ...emailValidation
                 }
-            });    
+            });
             return;
         }
 
@@ -401,25 +444,25 @@ class Signup extends Component {
         });
 
         checkEmailAvailability(emailValue)
-        .then(response => {
-            if(response.available) {
-                this.setState({
-                    email: {
-                        value: emailValue,
-                        validateStatus: 'success',
-                        errorMsg: null
-                    }
-                });
-            } else {
-                this.setState({
-                    email: {
-                        value: emailValue,
-                        validateStatus: 'error',
-                        errorMsg: 'This Email is already registered'
-                    }
-                });
-            }
-        }).catch(error => {
+            .then(response => {
+                if(response.available) {
+                    this.setState({
+                        email: {
+                            value: emailValue,
+                            validateStatus: 'success',
+                            errorMsg: null
+                        }
+                    });
+                } else {
+                    this.setState({
+                        email: {
+                            value: emailValue,
+                            validateStatus: 'error',
+                            errorMsg: 'This Email is already registered'
+                        }
+                    });
+                }
+            }).catch(error => {
             // Marking validateStatus as success, Form will be recchecked at server
             this.setState({
                 email: {
@@ -446,12 +489,12 @@ class Signup extends Component {
             return {
                 validateStatus: 'success',
                 errorMsg: null,
-            };            
+            };
         }
     }
 
 }
 
-const WrappedRegistrationForm = Form.create()(Signup);
+const WrappedRegistrationForm = Form.create()(SignupLegal);
 
 export default WrappedRegistrationForm;

@@ -1,0 +1,20 @@
+.aboutus_image {
+    padding-top: 30px;
+    position: fixed;
+}
+
+.contact-form-button {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.contact-form-button[disabled], .contact-form-button[disabled]:hover, .contact-form-button[disabled]:focus {
+    opacity: 0.6;
+    color: #fff;
+    background-color: #6e5351;
+    border-color: #6e5351;
+}
+
+.contact-form input {
+    margin-bottom: 3px;
+}

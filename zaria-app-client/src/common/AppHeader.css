@@ -23,6 +23,7 @@
   
   .app-menu {
     float: right;
+    background: rgba(255, 255, 255, 0);
   }
   
   .app-menu > li {

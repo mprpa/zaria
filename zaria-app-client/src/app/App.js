@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from '../logo.png';
 import './App.css';
 import {
     Route,
@@ -12,6 +11,10 @@ import { ACCESS_TOKEN } from '../constants';
 
 import Login from '../user/login/Login';
 import Signup from '../user/signup/Signup';
+import SignupLegal from '../user/signup/SignupLegal';
+import Profile from '../user/profile/Profile';
+import EditProfile from '../user/profile/EditProfile';
+import AboutUs from '../user/AboutUs';
 import AppHeader from '../common/AppHeader';
 import NotFound from '../common/NotFound';
 import LoadingIndicator from '../common/LoadingIndicator';
@@ -72,7 +75,7 @@ class App extends Component {
         this.props.history.push(redirectTo);
 
         notification[notificationType]({
-            message: 'Knitwear Zaria',
+            message: 'Zaria fashion',
             description: description,
         });
     }
@@ -84,7 +87,7 @@ class App extends Component {
     */
     handleLogin() {
         notification.success({
-            message: 'Knitwear Zaria',
+            message: 'Zaria fashion',
             description: "You're successfully logged in.",
         });
         this.loadCurrentUser();
@@ -111,11 +114,19 @@ class App extends Component {
                             {/*</Route>*/}
                             <Route path="/login" render={(props) => <Login onLogin={this.handleLogin} {...props} />}/>
                             <Route path="/signup" component={Signup}/>
-                            {/*<Route path="/users/:username"*/}
-                                   {/*render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}*/}
-                                                               {/*currentUser={this.state.currentUser} {...props}  />}>*/}
-                            {/*</Route>*/}
-                            <Route component={NotFound}/>
+                            <Route path="/signuplegal" component={SignupLegal}/>
+                            <Route path="/aboutus"
+                                   render={(props) => <AboutUs currentUser={this.state.currentUser} {...props} />}>
+                            </Route>
+                            <Route path="/users/:username/edit"
+                                   render={(props) => <EditProfile isAuthenticated={this.state.isAuthenticated}
+                                                                   currentUser={this.state.currentUser} {...props} />}>
+                            </Route>
+                            <Route path="/users/:username"
+                                   render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
+                                                               currentUser={this.state.currentUser} {...props} />}>
+                            </Route>
+                            <Route component={NotFound} />
                         </Switch>
                     </div>
                 </Content>
@@ -125,20 +136,3 @@ class App extends Component {
 }
 
 export default withRouter(App);
-
-// class App extends Component {
-//   render() {
-//     return (
-//       <div className="App">
-//         <header className="App-header">
-//           <img src={logo} className="App-logo" alt="logo" />
-//           <h1 className="App-title">Welcome to React</h1>
-//         </header>
-//         <p className="App-intro">
-//           To get started, edit <code>src/App.js</code> and save to reload.
-//         </p>
-//       </div>
-//     );
-//   }
-// }
-
