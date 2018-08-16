@@ -24,26 +24,45 @@ class AppHeader extends Component {
     render() {
         let menuItems;
         if (this.props.currentUser) {
-            menuItems = [
-                <Menu.Item key="/">
-                    <Link to="/">
-                        <Icon type="home" className="nav-icon"/>
-                    </Link>
-                </Menu.Item>,
-                <Menu.Item key="/poll/new">
-                    <Link to="/poll/new">
-                        {/*<img src={pollIcon} alt="poll" className="poll-icon"/>*/}
-                    </Link>
-                </Menu.Item>,
-                <Menu.Item key="/profile" className="profile-menu">
-                    <ProfileDropdownMenu
-                        currentUser={this.props.currentUser}
-                        handleMenuClick={this.handleMenuClick}/>
-                </Menu.Item>,
-                <Menu.Item key="/aboutus">
-                    <Link to="/aboutus">About us</Link>
-                </Menu.Item>
-            ];
+            if (this.props.isAdmin) {
+                menuItems = [
+                    <Menu.Item key="/">
+                        <Link to="/">
+                            <Icon type="home" className="nav-icon"/>
+                        </Link>
+                    </Menu.Item>,
+                    <Menu.Item key="/article/new">
+                        <Link to="/article/new">
+                            <Icon type="file-add" className="nav-icon"/>
+                        </Link>
+                    </Menu.Item>,
+                    <Menu.Item key="logout"
+                               onClick={this.props.onLogout}>
+                        Logout
+                    </Menu.Item>
+                ];
+            } else {
+                menuItems = [
+                    <Menu.Item key="/">
+                        <Link to="/">
+                            <Icon type="home" className="nav-icon"/>
+                        </Link>
+                    </Menu.Item>,
+                    <Menu.Item key="/poll/new">
+                        <Link to="/poll/new">
+                            {/*<img src={pollIcon} alt="poll" className="poll-icon"/>*/}
+                        </Link>
+                    </Menu.Item>,
+                    <Menu.Item key="/profile" className="profile-menu">
+                        <ProfileDropdownMenu
+                            currentUser={this.props.currentUser}
+                            handleMenuClick={this.handleMenuClick}/>
+                    </Menu.Item>,
+                    <Menu.Item key="/aboutus">
+                        <Link to="/aboutus">About us</Link>
+                    </Menu.Item>
+                ];
+            }
         } else {
             menuItems = [
                 <Menu.Item key="/login">

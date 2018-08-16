@@ -49,7 +49,14 @@ class Profile extends Component {
       
     componentDidMount() {
         const username = this.props.match.params.username;
-        this.loadUserProfile(username);
+        if(this.props.currentUser.username != username) {
+            this.setState({
+                serverError: true,
+                isLoading: false
+            });
+        } else {
+            this.loadUserProfile(username);
+        }
     }
 
     componentWillReceiveProps(nextProps) {

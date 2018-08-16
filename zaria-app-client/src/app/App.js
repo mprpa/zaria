@@ -15,6 +15,7 @@ import SignupLegal from '../user/signup/SignupLegal';
 import Profile from '../user/profile/Profile';
 import EditProfile from '../user/profile/EditProfile';
 import AboutUs from '../user/AboutUs';
+import NewArticle from '../user/admin/NewArticle';
 import AppHeader from '../common/AppHeader';
 import NotFound from '../common/NotFound';
 import LoadingIndicator from '../common/LoadingIndicator';
@@ -28,6 +29,7 @@ class App extends Component {
         this.state = {
             currentUser: null,
             isAuthenticated: false,
+            isAdmin: false,
             isLoading: false
         }
         this.handleLogout = this.handleLogout.bind(this);
@@ -47,9 +49,11 @@ class App extends Component {
         });
         getCurrentUser()
             .then(response => {
+                console.log(response);
                 this.setState({
                     currentUser: response,
                     isAuthenticated: true,
+                    isAdmin: response.admin,
                     isLoading: false
                 });
             }).catch(error => {
@@ -69,7 +73,8 @@ class App extends Component {
 
         this.setState({
             currentUser: null,
-            isAuthenticated: false
+            isAuthenticated: false,
+            isAdmin: false
         });
 
         this.props.history.push(redirectTo);
@@ -101,6 +106,7 @@ class App extends Component {
         return (
             <Layout className="app-container">
                 <AppHeader isAuthenticated={this.state.isAuthenticated}
+                           isAdmin={this.state.isAdmin}
                            currentUser={this.state.currentUser}
                            onLogout={this.handleLogout}/>
 
@@ -125,6 +131,11 @@ class App extends Component {
                             <Route path="/users/:username"
                                    render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
                                                                currentUser={this.state.currentUser} {...props} />}>
+                            </Route>
+                            <Route path="/article/new"
+                                   render={(props) => <NewArticle isAuthenticated={this.state.isAuthenticated}
+                                                                  isAdmin={this.state.isAdmin}
+                                                                  currentUser={this.state.currentUser} {...props} />}>
                             </Route>
                             <Route component={NotFound} />
                         </Switch>

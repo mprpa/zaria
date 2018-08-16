@@ -2,6 +2,7 @@ package com.company.zaria.controller;
 
 import com.company.zaria.exception.ResourceNotFoundException;
 import com.company.zaria.model.Message;
+import com.company.zaria.model.RoleName;
 import com.company.zaria.model.User;
 import com.company.zaria.payload.*;
 import com.company.zaria.repository.MessageRepository;
@@ -34,9 +35,12 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/user/me")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
+        UserSummary userSummary = new UserSummary(currentUser.getId(),
+                currentUser.getUsername(),
+                currentUser.getName(),
+                currentUser.getAuthorities().iterator().next().getAuthority() == RoleName.ROLE_ADMIN.name());
         return userSummary;
     }
 
