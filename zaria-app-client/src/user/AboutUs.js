@@ -184,7 +184,7 @@ class AboutUs extends Component {
                 <div>
                     <Row>
                         <Col span={8}>
-                            <img className="aboutus_image" src={image} alt="image"/>
+                            <img className="aboutus_image" src={image} alt=""/>
                         </Col>
                         <Col span={16}>
                             <h1 className="page-title">About Us</h1>

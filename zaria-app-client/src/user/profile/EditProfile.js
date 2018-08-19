@@ -127,7 +127,7 @@ class EditProfile extends Component {
       
     componentDidMount() {
         const username = this.props.match.params.username;
-        if(this.props.currentUser.username != username) {
+        if(this.props.currentUser.username !== username) {
             this.setState({
                 serverError: true,
                 isLoading: false
