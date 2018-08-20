@@ -12,9 +12,8 @@ public class Fabric {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
     @Column(length = 60)
-    private Composition composition;
+    private String composition;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
@@ -37,11 +36,11 @@ public class Fabric {
         this.id = id;
     }
 
-    public Composition getComposition() {
+    public String getComposition() {
         return composition;
     }
 
-    public void setComposition(Composition composition) {
+    public void setComposition(String composition) {
         this.composition = composition;
     }
 

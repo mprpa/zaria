@@ -130,3 +130,18 @@ export function uploadArticleImage(file) {
             })
         );
 }
+
+export function createArticle(newArticleRequest) {
+    return request({
+        url: API_BASE_URL + "/admin/newArticle",
+        method: 'POST',
+        body: JSON.stringify(newArticleRequest)
+    });
+}
+
+export function getNumUnreadMessages() {
+    return request({
+        url: API_BASE_URL + "/admin/numUnreadMessages",
+        method: 'GET'
+    });
+}

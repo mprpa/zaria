@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import "./NewArticle.css";
 
-import {Input, Form, Select, Button, Switch, Icon} from "antd";
-import {checkArticleCodeAvailability, uploadArticleImage} from "../../util/APIUtils";
+import {Input, Form, Select, Button, Switch, Icon, notification} from "antd";
+import {checkArticleCodeAvailability, uploadArticleImage, createArticle} from "../../util/APIUtils";
 import ColorPaletteComponent from './ColorPaletteComponent';
 import {uniqueId} from 'lodash';
 import {colorsList} from "../../constants";
@@ -134,30 +134,46 @@ class NewArticle extends Component {
         const formData = new FormData();
         formData.append('file', this.state.selectedFile, this.state.selectedFile.name);
 
-        uploadArticleImage(formData);
+        uploadArticleImage(formData)
+            .then(response => {
+                notification.success({
+                    message: 'Zaria fashion',
+                    description: response.message,
+                });
+                var messageParts = response.message.split(' ');
+                var id = messageParts[messageParts.length - 1].split('!')[0];
+                const articleRequest = {
+                    code: this.state.code.value,
+                    name: this.state.name.value,
+                    gender: this.state.gender.value,
+                    children: this.state.forChildren.value,
+                    retailPrice: this.state.retailPrice.value,
+                    wholesalePrice: this.state.wholesalePrice.value,
+                    weight: this.state.weight.value,
+                    fabric: this.state.fabric.value,
+                    colors: this.getSelectedColors(),
+                    imageId: id
+                };
+                createArticle(articleRequest)
+                    .then(response => {
+                        notification.success({
+                            message: 'Zaria fashion',
+                            description: response.message,
+                        });
 
-        // const signupRequest = {
-        //     name: this.state.name.value,
-        //     email: this.state.email.value,
-        //     username: this.state.username.value,
-        //     password: this.state.password.value,
-        //     address: this.state.address.value,
-        //     phoneNumber: this.state.phoneNumber.value
-        // };
-        //
-        // signup(signupRequest)
-        //     .then(response => {
-        //         notification.success({
-        //             message: 'Zaria fashion',
-        //             description: "Thank you! You're successfully registered. Please Login to continue!",
-        //         });
-        //         this.props.history.push("/login");
-        //     }).catch(error => {
-        //     notification.error({
-        //         message: 'Zaria fashion',
-        //         description: error.message || 'Sorry! Something went wrong. Please try again!'
-        //     });
-        // });
+                        this.props.history.push("/");
+                    }).catch(error => {
+                    notification.error({
+                        message: 'Zaria fashion',
+                        description: error.message || 'Sorry! Something went wrong. Please try again!'
+                    })
+                });
+            }).catch(error => {
+            notification.error({
+                message: 'Zaria fashion',
+                description: error.message || 'Sorry! Something went wrong. Please try again!'
+            });
+        });
     }
 
     isFormInvalid() {

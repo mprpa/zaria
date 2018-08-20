@@ -99,6 +99,7 @@ public class UserController {
         Message message = new Message(messageRequest.getName(),
                 messageRequest.getEmail(),
                 messageRequest.getMessage(),
+                false,
                 false);
 
         Message reponse = messageRepository.save(message);

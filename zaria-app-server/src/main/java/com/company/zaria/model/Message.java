@@ -27,15 +27,19 @@ public class Message extends DateAudit {
     private String message;
 
     @Column(columnDefinition = "tinyint(1) default 0")
+    private boolean seen;
+
+    @Column(columnDefinition = "tinyint(1) default 0")
     private boolean answered;
 
     public Message() {
     }
 
-    public Message(String name, String email, String message, boolean answered) {
+    public Message(String name, String email, String message, boolean seen, boolean answered) {
         this.name = name;
         this.email = email;
         this.message = message;
+        this.seen = seen;
         this.answered = answered;
     }
 
@@ -69,6 +73,14 @@ public class Message extends DateAudit {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isSeen() {
+        return seen;
+    }
+
+    public void setSeen(boolean seen) {
+        this.seen = seen;
     }
 
     public boolean isAnswered() {

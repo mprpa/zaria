@@ -6,7 +6,7 @@ import {
     Switch
 } from 'react-router-dom';
 
-import { getCurrentUser } from '../util/APIUtils';
+import { getCurrentUser, getNumUnreadMessages } from '../util/APIUtils';
 import { ACCESS_TOKEN } from '../constants';
 
 import Login from '../user/login/Login';
@@ -30,7 +30,8 @@ class App extends Component {
             currentUser: null,
             isAuthenticated: false,
             isAdmin: false,
-            isLoading: false
+            isLoading: false,
+            messages: 0
         }
         this.handleLogout = this.handleLogout.bind(this);
         this.loadCurrentUser = this.loadCurrentUser.bind(this);
@@ -54,6 +55,16 @@ class App extends Component {
                     isAuthenticated: true,
                     isAdmin: response.admin,
                     isLoading: false
+                });
+            }).catch(error => {
+            this.setState({
+                isLoading: false
+            });
+        });
+        getNumUnreadMessages()
+            .then(response => {
+                this.setState({
+                    messages: response.countUnseen
                 });
             }).catch(error => {
             this.setState({
@@ -106,6 +117,7 @@ class App extends Component {
             <Layout className="app-container">
                 <AppHeader isAuthenticated={this.state.isAuthenticated}
                            isAdmin={this.state.isAdmin}
+                           numUnreadMessages={this.state.messages}
                            currentUser={this.state.currentUser}
                            onLogout={this.handleLogout}/>
 
@@ -132,6 +144,11 @@ class App extends Component {
                                                                currentUser={this.state.currentUser} {...props} />}>
                             </Route>
                             <Route path="/article/new"
+                                   render={(props) => <NewArticle isAuthenticated={this.state.isAuthenticated}
+                                                                  isAdmin={this.state.isAdmin}
+                                                                  currentUser={this.state.currentUser} {...props} />}>
+                            </Route>
+                            <Route path="/admin/messages"
                                    render={(props) => <NewArticle isAuthenticated={this.state.isAuthenticated}
                                                                   isAdmin={this.state.isAdmin}
                                                                   currentUser={this.state.currentUser} {...props} />}>

@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 import './AppHeader.css';
 import logo from '../logo.png';
-import { Layout, Menu, Dropdown, Icon } from 'antd';
+import { Layout, Menu, Dropdown, Icon, Badge } from 'antd';
 const Header = Layout.Header;
 const SubMenu = Menu.SubMenu;
     
@@ -29,6 +29,13 @@ class AppHeader extends Component {
                     <Menu.Item key="/">
                         <Link to="/">
                             <Icon type="home" className="nav-icon"/>
+                        </Link>
+                    </Menu.Item>,
+                    <Menu.Item key="/admin/messages">
+                        <Link to="/admin/messages">
+                            <Badge count={this.props.numUnreadMessages}>
+                                <Icon type="mail" className="nav-icon"/>
+                            </Badge>
                         </Link>
                     </Menu.Item>,
                     <Menu.Item key="/article/new">

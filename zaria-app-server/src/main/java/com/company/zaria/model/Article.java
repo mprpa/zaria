@@ -36,13 +36,10 @@ public class Article extends DateAudit {
     @Column(columnDefinition = "tinyint(1)")
     private boolean children;
 
-    @NotBlank
     private float retailPrice;
 
-    @NotBlank
     private float wholesalePrice;
 
-    @NotBlank
     private float weight;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
