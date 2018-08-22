@@ -6,7 +6,7 @@ import {
     Switch
 } from 'react-router-dom';
 
-import { getCurrentUser, getNumUnreadMessages } from '../util/APIUtils';
+import { getCurrentUser, getNumUnreadMessages, readMessages } from '../util/APIUtils';
 import { ACCESS_TOKEN } from '../constants';
 
 import Login from '../user/login/Login';
@@ -16,6 +16,7 @@ import Profile from '../user/profile/Profile';
 import EditProfile from '../user/profile/EditProfile';
 import AboutUs from '../user/AboutUs';
 import NewArticle from '../user/admin/NewArticle';
+import Messages from '../user/admin/Messages';
 import AppHeader from '../common/AppHeader';
 import NotFound from '../common/NotFound';
 import LoadingIndicator from '../common/LoadingIndicator';
@@ -31,11 +32,14 @@ class App extends Component {
             isAuthenticated: false,
             isAdmin: false,
             isLoading: false,
-            messages: 0
+            messages: 0,
+            messagesList: null
         }
         this.handleLogout = this.handleLogout.bind(this);
         this.loadCurrentUser = this.loadCurrentUser.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
+        this.getUnreadMessages = this.getUnreadMessages.bind(this);
+        this.handleReadMessages = this.handleReadMessages.bind(this);
 
         notification.config({
             placement: 'topRight',
@@ -61,10 +65,14 @@ class App extends Component {
                 isLoading: false
             });
         });
+    }
+
+    getUnreadMessages() {
         getNumUnreadMessages()
             .then(response => {
                 this.setState({
-                    messages: response.countUnseen
+                    messages: response.countUnseen,
+                    messagesList: response.messageList
                 });
             }).catch(error => {
             this.setState({
@@ -75,6 +83,7 @@ class App extends Component {
 
     componentWillMount() {
         this.loadCurrentUser();
+        this.getUnreadMessages();
     }
 
     // Handle Logout, Set currentUser and isAuthenticated state which will be passed to other components
@@ -109,6 +118,19 @@ class App extends Component {
         this.props.history.push("/");
     }
 
+    handleReadMessages() {
+        readMessages()
+            .then(response => {
+                this.setState({
+                    messages: 0
+                });
+            }).catch(error => {
+            this.setState({
+                isLoading: false
+            });
+        });
+    }
+
     render() {
         if (this.state.isLoading) {
             return <LoadingIndicator/>
@@ -119,7 +141,8 @@ class App extends Component {
                            isAdmin={this.state.isAdmin}
                            numUnreadMessages={this.state.messages}
                            currentUser={this.state.currentUser}
-                           onLogout={this.handleLogout}/>
+                           onLogout={this.handleLogout}
+                           onMessages={this.handleReadMessages}/>
 
                 <Content className="app-content">
                     <div className="container">
@@ -149,9 +172,10 @@ class App extends Component {
                                                                   currentUser={this.state.currentUser} {...props} />}>
                             </Route>
                             <Route path="/admin/messages"
-                                   render={(props) => <NewArticle isAuthenticated={this.state.isAuthenticated}
-                                                                  isAdmin={this.state.isAdmin}
-                                                                  currentUser={this.state.currentUser} {...props} />}>
+                                   render={(props) => <Messages isAuthenticated={this.state.isAuthenticated}
+                                                                isAdmin={this.state.isAdmin}
+                                                                messagesList={this.state.messagesList}
+                                                                currentUser={this.state.currentUser} {...props} />}>
                             </Route>
                             <Route component={NotFound} />
                         </Switch>

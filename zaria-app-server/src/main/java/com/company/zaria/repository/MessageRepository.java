@@ -12,4 +12,6 @@ public interface MessageRepository extends JpaRepository <Message, Long> {
     List<Message> findAllByAnswered(boolean answered);
 
     List<Message> findAllBySeen(boolean seen);
+
+    List<Message> findByIdIn(List<Long> ids);
 }

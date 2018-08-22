@@ -3,6 +3,7 @@ package com.company.zaria.controller;
 import com.company.zaria.model.*;
 import com.company.zaria.payload.*;
 import com.company.zaria.repository.*;
+import com.company.zaria.util.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -150,6 +153,7 @@ public class AdminController {
         List<Message> messages = messageRepository.findAllByAnswered(false);
         for(Message message : messages) {
             NotAnsweredMessage notAnsweredMessage = new NotAnsweredMessage();
+            notAnsweredMessage.setId(message.getId());
             notAnsweredMessage.setEmail(message.getEmail());
             notAnsweredMessage.setName(message.getName());
             notAnsweredMessage.setMessage(message.getMessage());
@@ -161,6 +165,32 @@ public class AdminController {
         notAnsweredMessages.setCountUnseen(messages.size());
 
         return notAnsweredMessages;
+    }
+
+    @GetMapping("/readMessages")
+    public ResponseEntity<?> readMessages() {
+
+        List<Message> messages = messageRepository.findAllBySeen(false);
+        for(Message message : messages) {
+            message.setSeen(true);
+            messageRepository.save(message);
+        }
+
+        return ResponseEntity.ok().body(new ApiResponse(true, "Messages read!"));
+    }
+
+    @PostMapping("/sendMessageResponse")
+    public ResponseEntity<?> sendMessageResponse(@Valid @RequestBody MessageResponse messageResponse) {
+
+        Message message = messageRepository.findByIdIn(new ArrayList<>(Arrays.asList(messageResponse.getId()))).get(0);
+
+        EmailService emailService = new EmailService();
+        emailService.sendSimpleMessage(message.getEmail(), messageResponse.getTitle(), messageResponse.getDescription());
+
+        message.setAnswered(true);
+        messageRepository.save(message);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, "Messages read!"));
     }
 
     private String getFileExtension(String fileName) {

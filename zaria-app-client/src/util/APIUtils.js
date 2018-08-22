@@ -145,3 +145,18 @@ export function getNumUnreadMessages() {
         method: 'GET'
     });
 }
+
+export function readMessages() {
+    return request({
+        url: API_BASE_URL + "/admin/readMessages",
+        method: 'GET'
+    });
+}
+
+export function sendResponse(messageResponse) {
+    return request({
+        url: API_BASE_URL + "/admin/sendMessageResponse",
+        method: 'POST',
+        body: JSON.stringify(messageResponse)
+    });
+}

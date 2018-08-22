@@ -19,6 +19,9 @@ class AppHeader extends Component {
       if(key === "logout") {
         this.props.onLogout();
       }
+      if(key === "/admin/messages") {
+          this.props.onMessages();
+      }
     }
 
     render() {
@@ -102,7 +105,8 @@ class AppHeader extends Component {
                 className="app-menu"
                 mode="horizontal"
                 selectedKeys={[this.props.location.pathname]}
-                style={{ lineHeight: '64px' }} >
+                style={{ lineHeight: '64px' }}
+                onClick={this.handleMenuClick}>
                   {menuItems}
               </Menu>
             </div>
