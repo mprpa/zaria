@@ -37,9 +37,14 @@ public class UserController {
     @GetMapping("/user/me")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
+        User user = userRepository.findByUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+
         UserSummary userSummary = new UserSummary(currentUser.getId(),
                 currentUser.getUsername(),
                 currentUser.getName(),
+                user.getAddress(),
+                user.getPhoneNumber(),
                 currentUser.getAuthorities().iterator().next().getAuthority() == RoleName.ROLE_ADMIN.name(),
                 currentUser.getAuthorities().iterator().next().getAuthority() == RoleName.ROLE_USER_LEGAL.name());
         return userSummary;

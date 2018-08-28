@@ -167,3 +167,11 @@ export function getProducts() {
         method: 'GET'
     });
 }
+
+export function placeOrder(orderInfo) {
+    return request({
+        url: API_BASE_URL + "/article/placeOrder",
+        method: 'POST',
+        body: JSON.stringify(orderInfo)
+    });
+}

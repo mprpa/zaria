@@ -42,8 +42,7 @@ class App extends Component {
             totalItems: 0,
             totalAmount: 0,
             term: '',
-            category: '',
-            cartBounce: false
+            category: ''
         }
         this.handleLogout = this.handleLogout.bind(this);
         this.loadCurrentUser = this.loadCurrentUser.bind(this);
@@ -58,6 +57,7 @@ class App extends Component {
         this.checkProduct = this.checkProduct.bind(this);
         this.handleRemoveProduct = this.handleRemoveProduct.bind(this);
         this.handleCheckout = this.handleCheckout.bind(this);
+        this.clearCart = this.clearCart.bind(this);
 
         notification.config({
             placement: 'topRight',
@@ -188,12 +188,10 @@ class App extends Component {
             cartItem.push(selectedProducts);
         }
         this.setState({
-            cart : cartItem,
-            cartBounce: true,
+            cart : cartItem
         });
         setTimeout(function(){
             this.setState({
-                cartBounce:false,
                 quantity: 1
             });
         }.bind(this),1000);
@@ -238,6 +236,16 @@ class App extends Component {
 
     handleCheckout() {
         this.props.history.push("/checkout");
+    }
+
+    clearCart() {
+        this.setState({
+            cart: [],
+            totalItems: 0,
+            totalAmount: 0,
+            term: '',
+            category: ''
+        })
     }
 
     render() {
@@ -303,7 +311,11 @@ class App extends Component {
                             <Route path="/checkout"
                                    render={(props) => <Checkout isAuthenticated={this.state.isAuthenticated}
                                                                 currentUser={this.state.currentUser}
-                                                                cartItems={this.state.cart} {...props} />}>
+                                                                isLegal={this.state.isLegal}
+                                                                cartItems={this.state.cart}
+                                                                totalItems={this.state.totalItems}
+                                                                totalAmount={this.state.totalAmount}
+                                                                clearCart={this.clearCart} {...props} />}>
                             </Route>
                             <Route component={NotFound}/>
                         </Switch>

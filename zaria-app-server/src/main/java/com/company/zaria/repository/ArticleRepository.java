@@ -9,4 +9,6 @@ public interface ArticleRepository extends JpaRepository <Article, Long> {
 
     Boolean existsByCode(String code);
 
+    Article findByCode(String code);
+
 }

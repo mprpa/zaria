@@ -5,13 +5,17 @@ public class UserSummary {
     private Long id;
     private String username;
     private String name;
+    private String address;
+    private String phone;
     private boolean admin;
     private boolean legal;
 
-    public UserSummary(Long id, String username, String name, boolean admin, boolean legal) {
+    public UserSummary(Long id, String username, String name, String address, String phone, boolean admin, boolean legal) {
         this.id = id;
         this.username = username;
         this.name = name;
+        this.address = address;
+        this.phone = phone;
         this.admin = admin;
         this.legal = legal;
     }
@@ -39,6 +43,14 @@ public class UserSummary {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getAddress() { return address; }
+
+    public void setAddress(String address) { this.address = address; }
+
+    public String getPhone() { return phone; }
+
+    public void setPhone(String phone) { this.phone = phone; }
 
     public boolean isAdmin() {
         return admin;
