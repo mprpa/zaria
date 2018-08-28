@@ -6,12 +6,14 @@ public class UserSummary {
     private String username;
     private String name;
     private boolean admin;
+    private boolean legal;
 
-    public UserSummary(Long id, String username, String name, boolean admin) {
+    public UserSummary(Long id, String username, String name, boolean admin, boolean legal) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.admin = admin;
+        this.legal = legal;
     }
 
     public Long getId() {
@@ -46,4 +48,7 @@ public class UserSummary {
         this.admin = admin;
     }
 
+    public boolean isLegal() { return legal; }
+
+    public void setLegal(boolean legal) { this.legal = legal; }
 }

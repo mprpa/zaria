@@ -42,6 +42,9 @@ public class AdminController {
     @Autowired
     private MessageRepository messageRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     @Value("${file.upload-dir}")
     private String uploadDirectory;
 
@@ -184,13 +187,12 @@ public class AdminController {
 
         Message message = messageRepository.findByIdIn(new ArrayList<>(Arrays.asList(messageResponse.getId()))).get(0);
 
-        EmailService emailService = new EmailService();
         emailService.sendSimpleMessage(message.getEmail(), messageResponse.getTitle(), messageResponse.getDescription());
 
         message.setAnswered(true);
         messageRepository.save(message);
 
-        return ResponseEntity.ok().body(new ApiResponse(true, "Messages read!"));
+        return ResponseEntity.ok().body(new ApiResponse(true, "Message sent!"));
     }
 
     private String getFileExtension(String fileName) {

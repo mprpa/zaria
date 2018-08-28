@@ -85,6 +85,7 @@ class Messages extends Component {
                         message: 'Zaria fashion',
                         description: response.message,
                     });
+                    this.props.getUnreadMessages();
                 }).catch(error => {
                 notification.error({
                     message: 'Zaria fashion',

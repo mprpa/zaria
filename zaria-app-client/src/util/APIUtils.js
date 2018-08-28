@@ -160,3 +160,10 @@ export function sendResponse(messageResponse) {
         body: JSON.stringify(messageResponse)
     });
 }
+
+export function getProducts() {
+    return request({
+        url: API_BASE_URL + "/article/allProducts",
+        method: 'GET'
+    });
+}

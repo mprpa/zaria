@@ -40,7 +40,8 @@ public class UserController {
         UserSummary userSummary = new UserSummary(currentUser.getId(),
                 currentUser.getUsername(),
                 currentUser.getName(),
-                currentUser.getAuthorities().iterator().next().getAuthority() == RoleName.ROLE_ADMIN.name());
+                currentUser.getAuthorities().iterator().next().getAuthority() == RoleName.ROLE_ADMIN.name(),
+                currentUser.getAuthorities().iterator().next().getAuthority() == RoleName.ROLE_USER_LEGAL.name());
         return userSummary;
     }
 

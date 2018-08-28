@@ -1,7 +1,5 @@
 package com.company.zaria.payload;
 
-import com.company.zaria.model.Color;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
