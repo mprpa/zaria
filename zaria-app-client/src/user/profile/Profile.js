@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-// import PollList from '../../poll/PollList';
 import { getUserProfile } from '../../util/APIUtils';
-import { Avatar } from 'antd';
+import {Avatar, List, Tag} from 'antd';
 import { getAvatarColor } from '../../util/Colors';
 import { formatDate } from '../../util/Helpers';
 import LoadingIndicator  from '../../common/LoadingIndicator';
@@ -95,20 +94,60 @@ class Profile extends Component {
                                     </div>
                                 </div>
                             </div>
-                            {/*<div className="user-poll-details">    */}
-                                {/*<Tabs defaultActiveKey="1" */}
-                                    {/*animated={false}*/}
-                                    {/*tabBarStyle={tabBarStyle}*/}
-                                    {/*size="large"*/}
-                                    {/*className="profile-tabs">*/}
-                                    {/*<TabPane tab={`${this.state.user.pollCount} Polls`} key="1">*/}
-                                        {/*<PollList username={this.props.match.params.username} type="USER_CREATED_POLLS" />*/}
-                                    {/*</TabPane>*/}
-                                    {/*<TabPane tab={`${this.state.user.voteCount} Votes`}  key="2">*/}
-                                        {/*<PollList username={this.props.match.params.username} type="USER_VOTED_POLLS" />*/}
-                                    {/*</TabPane>*/}
-                                {/*</Tabs>*/}
-                            {/*</div>  */}
+                            <div className="user-order-details">
+                                <List
+                                    itemLayout="vertical"
+                                    size="large"
+                                    bordered
+                                    pagination={{
+                                        onChange: (page) => {
+                                            console.log(page);
+                                        },
+                                        pageSize: 3,
+                                    }}
+                                    dataSource={this.state.user.pastOrders}
+                                    renderItem={order => (
+                                        <List.Item
+                                            key={order.id}
+                                            actions={[`Total price: ${order.totalPrice} EUR`]}
+                                        >
+                                            <List.Item.Meta
+                                                title={`Order #${order.id}`}
+                                                description={`Created at ${formatDate(order.creationDateTime)}`}
+                                            />
+                                            <div className="user-order-detail">
+                                            <List
+                                                itemLayout="horizontal"
+                                                size="small"
+                                                dataSource={order.items}
+                                                renderItem={item => (
+                                                    <List.Item
+                                                        key={item.code + item.color + item.size}
+                                                        extra={
+                                                            <div>
+                                                                <div className="product-total">
+                                                                    <p className="quantity">{item.quantity} {item.quantity > 1 ? "Nos." : "No."} </p>
+                                                                    <p className="amount">{item.quantity * item.price}</p>
+                                                                </div>
+                                                            </div>}
+                                                    >
+                                                        <List.Item.Meta
+                                                            avatar={<Avatar src={process.env.PUBLIC_URL + item.image.substring(63)}/>}
+                                                            title={item.name}
+                                                            description={
+                                                                <div className="product-info">
+                                                                    <Tag color={item.color}> {item.size} </Tag>
+                                                                    <p className="product-price">{item.price}</p>
+                                                                </div>}
+                                                        />
+                                                    </List.Item>
+                                                )}
+                                            />
+                                            </div>
+                                        </List.Item>
+                                    )}
+                                />
+                            </div>
                         </div>  
                     ): null               
                 }

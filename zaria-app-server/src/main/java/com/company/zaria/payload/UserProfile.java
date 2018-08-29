@@ -1,6 +1,7 @@
 package com.company.zaria.payload;
 
 import java.time.Instant;
+import java.util.List;
 
 public class UserProfile {
 
@@ -13,6 +14,7 @@ public class UserProfile {
     private String phoneNumber;
     private String tin;
     private Instant joinedAt;
+    private List<PastOrder> pastOrders;
 
     public UserProfile(Long id, String username, String name, String email, String password, String address, String phoneNumber, String tin, Instant joinedAt) {
         this.id = id;
@@ -98,4 +100,11 @@ public class UserProfile {
         this.joinedAt = joinedAt;
     }
 
+    public List<PastOrder> getPastOrders() {
+        return pastOrders;
+    }
+
+    public void setPastOrders(List<PastOrder> pastOrders) {
+        this.pastOrders = pastOrders;
+    }
 }

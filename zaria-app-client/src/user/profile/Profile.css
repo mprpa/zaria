@@ -66,3 +66,17 @@
     }    
 }
 
+.user-order-detail .ant-avatar {
+    width: 80px;
+    height: 80px;
+}
+
+.ant-list-vertical .ant-list-item-meta-avatar {
+    display: inline !important;
+}
+
+.user-order-detail .ant-list-item {
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}

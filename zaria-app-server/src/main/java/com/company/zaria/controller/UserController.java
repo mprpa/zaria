@@ -1,11 +1,10 @@
 package com.company.zaria.controller;
 
 import com.company.zaria.exception.ResourceNotFoundException;
-import com.company.zaria.model.Message;
-import com.company.zaria.model.RoleName;
-import com.company.zaria.model.User;
+import com.company.zaria.model.*;
 import com.company.zaria.payload.*;
 import com.company.zaria.repository.MessageRepository;
+import com.company.zaria.repository.OrderRepository;
 import com.company.zaria.repository.UserRepository;
 import com.company.zaria.security.CurrentUser;
 import com.company.zaria.security.UserPrincipal;
@@ -18,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -28,6 +29,9 @@ public class UserController {
 
     @Autowired
     private  MessageRepository messageRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -68,8 +72,30 @@ public class UserController {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
-//        long pollCount = pollRepository.countByCreatedBy(user.getId());
-//        long voteCount = voteRepository.countByUserId(user.getId());
+        List<Order> orders = orderRepository.findAllByCreatedBy(user.getId());
+        List<PastOrder> pastOrders = new ArrayList<>();
+        for(Order order : orders) {
+            PastOrder pastOrder = new PastOrder();
+            pastOrder.setId(order.getId());
+            pastOrder.setCreationDateTime(order.getCreatedAt());
+            pastOrder.setTotalPrice(order.getTotalPrice());
+            List<PastOrderItem> pastOrderItems = new ArrayList<>();
+            for(OrderItem item : order.getItems()) {
+                PastOrderItem pastOrderItem = new PastOrderItem();
+                pastOrderItem.setImage(item.getArticle().getImage().getPath());
+                pastOrderItem.setName(item.getArticle().getName());
+                pastOrderItem.setCode(item.getArticle().getCode());
+                pastOrderItem.setColor(item.getColor().getCode());
+                pastOrderItem.setSize(item.getSize().name());
+                pastOrderItem.setPrice(user.getRole().getName() == RoleName.ROLE_USER_LEGAL ?
+                        item.getArticle().getWholesalePrice() :
+                        item.getArticle().getRetailPrice());
+                pastOrderItem.setQuantity(item.getAmount());
+                pastOrderItems.add(pastOrderItem);
+            }
+            pastOrder.setItems(pastOrderItems);
+            pastOrders.add(pastOrder);
+        }
 
         UserProfile userProfile = new UserProfile(user.getId(),
                 user.getUsername(),
@@ -80,6 +106,7 @@ public class UserController {
                 user.getPhoneNumber(),
                 user.getTin(),
                 user.getCreatedAt());
+        userProfile.setPastOrders(pastOrders);
 
         return userProfile;
     }
