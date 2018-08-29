@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import './ProductList.css';
-import {Modal, InputNumber, Select, Tag} from "antd";
-
-const Option = Select.Option;
+import {Modal, InputNumber, Tag, Cascader} from "antd";
 
 class QuickView extends Component{
     constructor(props){
@@ -10,8 +8,8 @@ class QuickView extends Component{
         this.state = {
             selectedProduct: {},
             value: 1,
-            size: "s",
-            color: this.props.item != null ? this.props.item.colors[0] : ""
+            size: "",
+            color: ""
         };
     }
 
@@ -21,17 +19,17 @@ class QuickView extends Component{
         });
     }
 
-    handleSizeChange = (value) => {
+    onChangeChoice = (value) => {
         this.setState ({
-            size: value
+            size: value[0],
+            color: value[1],
         });
     }
 
-    handleColorChange = (value) => {
-        this.setState ({
-            color: value
-        });
-    }
+    displayRender = (labels, selectedOptions) => labels.map((label, i) => {
+        const option = selectedOptions[i];
+        return <span key={option.value}>{label} / </span>;
+    });
 
     addToCart = () =>{
         this.setState({
@@ -46,6 +44,11 @@ class QuickView extends Component{
                 quantity: this.state.value
             }
         }, function(){
+            this.setState({
+                value: 1,
+                size: "",
+                color: "",
+            });
             this.props.onAddToCart(this.state.selectedProduct);
             this.props.onCancel();
         })
@@ -54,43 +57,73 @@ class QuickView extends Component{
     render() {
         const { visible, onCancel, item } = this.props;
 
-        let colors = [];
-        for (let i = 0; item != null && i < item.colors.length; i++) {
-            colors.push(<Option key={item.colors[i]} value={item.colors[i]}>
-                            <Tag color={item.colors[i]}>{item.colors[i]}</Tag>
-                        </Option>);
+        let available = true;
+        let options;
+
+        if(item == null || (!this.props.isLegal && item.availabilities == null)) {
+            options = <div>Sorry, not available right now </div>
+            available = false;
+        } else {
+            let values = [];
+            if(this.props.isLegal) {
+                values = [{
+                    value: 'S',
+                    label: 'S',
+                    children: [],
+                }, {
+                    value: 'M',
+                    label: 'M',
+                    children: [],
+                }, {
+                    value: 'L',
+                    label: 'L',
+                    children: [],
+                }, {
+                    value: 'XL',
+                    label: 'XL',
+                    children: [],
+                }, {
+                    value: 'XXL',
+                    label: 'XXL',
+                    children: [],
+                }];
+                let colors = [];
+                for (let i = 0; item != null && i < item.colors.length; i++) {
+                    let color = {
+                        value: item.colors[i],
+                        label: <Tag color={item.colors[i]}>{item.colors[i]}</Tag>
+                    };
+                    colors.push(color);
+                }
+                values.forEach(function(value) {
+                    value.children.push(colors)
+                });
+            } else {
+                let sizes = [...new Set(item.availabilities.map(item => item.size))];
+                sizes.forEach(function(size) {
+                    let value = {
+                        value: size,
+                        label: size,
+                        children: [],
+                    };
+                    let colors = item.availabilities.filter(x => x.size === size);
+                    colors = [...new Set(colors.map(item => item.color))];
+                    colors.forEach(function (color) {
+                        let colorChild = {
+                            value: color,
+                            label: <Tag color={color}>color</Tag>
+                        };
+                        value.children.push(colorChild);
+                    });
+                    values.push(value);
+                });
+            }
+            options = <div>
+                <Cascader options={values} onChange={this.onChangeChoice} displayRender={this.displayRender} placeholder="Please select" />
+                <InputNumber min={1} max={50} defaultValue={1} onChange={this.onChange} />
+            </div>
         }
 
-        let options;
-        if(this.props.isLegal) {
-            options = <div>
-                <Select defaultValue="s" className="selections" onChange={this.handleSizeChange}>
-                    <Option value="s">S</Option>
-                    <Option value="m">M</Option>
-                    <Option value="l">L</Option>
-                    <Option value="xl">XL</Option>
-                    <Option value="xxl">XXL</Option>
-                </Select>
-                <Select defaultValue={this.state.color} style={{ width: 120 }} onChange={this.handleColorChange}>
-                    {colors}
-                </Select>
-                <InputNumber min={1} max={10} defaultValue={1} onChange={this.onChange} />
-            </div>
-        } else {
-            options = <div>
-                <Select defaultValue="s" className="selections" onChange={this.handleSizeChange}>
-                    <Option value="s">S</Option>
-                    <Option value="m">M</Option>
-                    <Option value="l">L</Option>
-                    <Option value="xl">XL</Option>
-                    <Option value="xxl">XXL</Option>
-                </Select>
-                <Select defaultValue={this.state.color} className="selections" onChange={this.handleColorChange}>
-                    {colors}
-                </Select>
-                <InputNumber min={1} max={10} defaultValue={1} onChange={this.onChange} />
-            </div>
-        }
         return (
             item != null ?
                 <Modal
@@ -99,6 +132,7 @@ class QuickView extends Component{
                     okText="Add to cart"
                     onCancel={onCancel}
                     onOk={this.addToCart}
+                    okButtonProps={{ disabled: !available }}
                 >
                     <div className="product">
                         <div className="product-image">

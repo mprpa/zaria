@@ -30,7 +30,6 @@ public class ArticleState extends DateAudit {
     @Column(length = 5)
     private Size size;
 
-    @NotBlank
     private int amount;
 
     public ArticleState() {

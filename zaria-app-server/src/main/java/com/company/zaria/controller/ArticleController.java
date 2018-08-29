@@ -7,6 +7,7 @@ import com.company.zaria.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,18 +79,33 @@ public class ArticleController {
     @PostMapping("/placeOrder")
     public ResponseEntity<?> placeOrder(@Valid @RequestBody OrderRequest orderRequest) {
 
-        Order order = new Order();
-
         User user = userRepository.findByUsername(orderRequest.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", orderRequest.getUsername()));
-        order.setUser(user);
+
+        Order order = new Order();
 
         float totalPrice = 0;
         for (ItemRequest itemRequest : orderRequest.getItems()) {
+            Article article = articleRepository.findByCode(itemRequest.getCode());
+            Color color = colorRepository.getByCode(itemRequest.getColor());
+            Size size = Size.valueOf(itemRequest.getSize());
+
+            if(user.getRole().getName() != RoleName.ROLE_USER_LEGAL) {
+                ArticleState articleState = articleStateRepository.getByArticleAndColorAndSize(article, color, size);
+                if(articleState == null || articleState.getAmount() < itemRequest.getQuantity()) {
+                    return new ResponseEntity(new ApiResponse(false, "Sorry for inconvenience, but article " + itemRequest.getName() + " is not available!"),
+                            HttpStatus.BAD_REQUEST);
+                } else {
+                    articleState.setAmount(articleState.getAmount() - itemRequest.getQuantity());
+                    articleStateRepository.save(articleState);
+                }
+            }
+
             OrderItem item = new OrderItem();
-            item.setArticle(articleRepository.findByCode(itemRequest.getCode()));
-            item.setColor(colorRepository.getByCode(itemRequest.getColor()));
-            item.setSize(Size.valueOf(itemRequest.getSize()));
+            item.setOrder(order);
+            item.setArticle(article);
+            item.setColor(color);
+            item.setSize(size);
             item.setAmount(itemRequest.getQuantity());
             item.setDelivered(false);
             totalPrice += itemRequest.getPrice() * itemRequest.getQuantity();
@@ -98,6 +114,8 @@ public class ArticleController {
 
         order.setTotalPrice(totalPrice);
         order.setPaid(0);
+
+        order.setFromState(user.getRole().getName() != RoleName.ROLE_USER_LEGAL);
 
         orderRepository.save(order);
 

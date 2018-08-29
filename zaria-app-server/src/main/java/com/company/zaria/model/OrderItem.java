@@ -4,7 +4,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "order_item")
@@ -31,7 +30,6 @@ public class OrderItem {
     @Column(length = 5)
     private Size size;
 
-    @NotBlank
     private int amount;
 
     @Column(columnDefinition = "tinyint(1)")

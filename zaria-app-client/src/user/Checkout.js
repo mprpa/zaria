@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Checkout.css';
 
-import {Steps, Button, notification, List, Avatar, Tag, Input, Form} from 'antd';
+import {Steps, Button, notification, List, Avatar, Tag, Input, Form, Radio} from 'antd';
 import {placeOrder} from "../util/APIUtils";
 
 const Step = Steps.Step;
@@ -123,7 +123,7 @@ class Checkout extends Component{
 
     save = () => {
         const orderInfo = {
-            user: this.props.currentUser.username,
+            username: this.props.currentUser.username,
             items: this.props.cartItems
         }
         placeOrder(orderInfo)

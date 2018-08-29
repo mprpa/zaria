@@ -2,11 +2,6 @@
     background: rgba(233, 226, 210, 0);
 }
 
-.selections {
-    width: 120px;
-    margin-right: 40px;
-}
-
 /* Product */
 
 .product-image-actions {
@@ -74,4 +69,8 @@ content: " EUR";
 color: #666;
 padding: 0 16px;
 text-align: center;
+}
+
+.product .ant-input-number {
+    margin-left: 90px;
 }

@@ -240,7 +240,7 @@ class App extends Component {
 
     clearCart() {
         this.setState({
-            cart: [],
+            cart: this.state.cart.splice(0, this.state.cart.length),
             totalItems: 0,
             totalAmount: 0,
             term: '',
