@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import './ProductList.css';
+import '../ProductList.css';
 import QuickView from "./QuickView";
-import {Layout, List, Card, Input} from 'antd';
+import {Layout, List, Card, Input, notification} from 'antd';
+import {updateArticleState} from "../../util/APIUtils";
 const { Header, Content } = Layout;
 const { Search } = Input
 
-class ProductList extends Component {
+class Articles extends Component {
 
     constructor(props){
         super(props);
@@ -31,6 +32,27 @@ class ProductList extends Component {
         });
     }
 
+    handleUpdate = (selectedProduct) => {
+        const articleInfo = {
+            article: selectedProduct.code,
+            size: selectedProduct.size,
+            color: selectedProduct.color,
+            amount: selectedProduct.quantity,
+        }
+        updateArticleState(articleInfo)
+            .then(response => {
+                notification.success({
+                    message: 'Zaria fashion',
+                    description: "Article state updated!"
+                });
+            }).catch(error => {
+            notification.error({
+                message: 'Zaria fashion',
+                description: error.message || 'Sorry! Something went wrong. Please try again!'
+            });
+        });
+    }
+
     render(){
         let productsData;
         let term = this.props.searchTerm;
@@ -47,10 +69,10 @@ class ProductList extends Component {
             <Layout>
                 <Header className="content-layout-header">
                     <Search
-                    placeholder="Input search text"
-                    onSearch={value => console.log(value)}
-                    onChange={this.props.handleSearch}
-                    enterButton
+                        placeholder="Input search text"
+                        onSearch={value => console.log(value)}
+                        onChange={this.props.handleSearch}
+                        enterButton
                     />
                 </Header>
                 <Content>
@@ -72,9 +94,9 @@ class ProductList extends Component {
                                         title={item.name}
                                         style={{width: 300}}
                                         cover={<div className="product-image-actions">
-                                                    <img src={process.env.PUBLIC_URL + item.imagePath.substring(63)}
-                                                         alt={item.name}/>
-                                                </div>}>
+                                            <img src={process.env.PUBLIC_URL + item.imagePath.substring(63)}
+                                                 alt={item.name}/>
+                                        </div>}>
                                     </Card>
                                 </List.Item>
                             </a>
@@ -83,7 +105,7 @@ class ProductList extends Component {
                     <QuickView
                         visible={this.state.visible}
                         onCancel={this.handleCancel}
-                        onAddToCart={this.props.addToCart}
+                        onUpdate={this.handleUpdate}
                         item={this.state.selectedItem}
                         isLegal={this.props.isLegal}
                     />
@@ -93,4 +115,4 @@ class ProductList extends Component {
     }
 }
 
-export default ProductList;
+export default Articles;

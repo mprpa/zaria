@@ -121,4 +121,28 @@ public class ArticleController {
 
         return ResponseEntity.ok().body(new ApiResponse(true, "Order sent!"));
     }
+
+    @PostMapping("/updateState")
+    public ResponseEntity<?> updateState(@Valid @RequestBody ArticleStateRequest articleStateRequest) {
+
+        Article article = articleRepository.findByCode(articleStateRequest.getArticle());
+        Color color = colorRepository.getByCode(articleStateRequest.getColor());
+        Size size = Size.valueOf(articleStateRequest.getSize());
+
+        ArticleState articleState;
+        if(articleStateRepository.existsByArticleAndColorAndSize(article, color, size)) {
+            articleState = articleStateRepository.getByArticleAndColorAndSize(article, color, size);
+            articleState.setAmount(articleState.getAmount() + articleStateRequest.getAmount());
+        } else {
+            articleState = new ArticleState();
+            articleState.setArticle(article);
+            articleState.setSize(size);
+            articleState.setColor(color);
+            articleState.setAmount(articleStateRequest.getAmount());
+        }
+
+        articleStateRepository.save(articleState);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, "Article state updated!"));
+    }
 }

@@ -1,5 +1,6 @@
 package com.company.zaria.controller;
 
+import com.company.zaria.exception.AppException;
 import com.company.zaria.model.*;
 import com.company.zaria.payload.*;
 import com.company.zaria.repository.*;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,6 +43,15 @@ public class AdminController {
 
     @Autowired
     private MessageRepository messageRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private EmailService emailService;
@@ -193,6 +204,30 @@ public class AdminController {
         messageRepository.save(message);
 
         return ResponseEntity.ok().body(new ApiResponse(true, "Message sent!"));
+    }
+
+    @PostMapping("/newUser")
+    public ResponseEntity<?> addNewUser(@Valid @RequestBody NewUserRequest newUserRequest) {
+
+        // Creating user's account
+        User user = new User(newUserRequest.getTin(),
+                newUserRequest.getTin() + "@zaria.com",
+                newUserRequest.getTin(),
+                newUserRequest.getName(),
+                newUserRequest.getTin(),
+                newUserRequest.getAddress(),
+                newUserRequest.getPhoneNumber());
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        Role userRole = roleRepository.findByName(RoleName.ROLE_USER_LEGAL)
+                .orElseThrow(() -> new AppException("User Role not set."));
+
+        user.setRole(userRole);
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, "User added!"));
     }
 
     private String getFileExtension(String fileName) {

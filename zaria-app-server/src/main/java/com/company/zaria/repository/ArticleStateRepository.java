@@ -18,6 +18,8 @@ public interface ArticleStateRepository extends JpaRepository<ArticleState, Long
 
     List<ArticleState> getAllByArticle(Article article);
 
+    boolean existsByArticleAndColorAndSize(Article article, Color color, Size size);
+
     ArticleState getByArticleAndColorAndSize(Article article, Color color, Size size);
 
 }

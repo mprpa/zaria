@@ -161,6 +161,14 @@ export function sendResponse(messageResponse) {
     });
 }
 
+export function addNewUser(newUserRequest) {
+    return request({
+        url: API_BASE_URL + "/admin/newUser",
+        method: 'POST',
+        body: JSON.stringify(newUserRequest)
+    });
+}
+
 export function getProducts() {
     return request({
         url: API_BASE_URL + "/article/allProducts",
@@ -173,5 +181,14 @@ export function placeOrder(orderInfo) {
         url: API_BASE_URL + "/article/placeOrder",
         method: 'POST',
         body: JSON.stringify(orderInfo)
+    });
+}
+
+
+export function updateArticleState(articleInfo) {
+    return request({
+        url: API_BASE_URL + "/article/updateState",
+        method: 'POST',
+        body: JSON.stringify(articleInfo)
     });
 }

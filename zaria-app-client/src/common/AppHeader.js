@@ -66,9 +66,24 @@ class AppHeader extends Component {
                             </Badge>
                         </Link>
                     </Menu.Item>,
+                    <Menu.Item key="/articles">
+                        <Link to="/articles">
+                            <Icon type="tags-o" className="nav-icon"/>
+                        </Link>
+                    </Menu.Item>,
                     <Menu.Item key="/article/new">
                         <Link to="/article/new">
                             <Icon type="file-add" className="nav-icon"/>
+                        </Link>
+                    </Menu.Item>,
+                    <Menu.Item key="/order/new">
+                        <Link to="/order/new">
+                            <Icon type="folder-add" className="nav-icon"/>
+                        </Link>
+                    </Menu.Item>,
+                    <Menu.Item key="/user/new">
+                        <Link to="/user/new">
+                            <Icon type="user-add" className="nav-icon"/>
                         </Link>
                     </Menu.Item>,
                     <Menu.Item key="logout"

@@ -16,8 +16,11 @@ import SignupLegal from '../user/signup/SignupLegal';
 import Profile from '../user/profile/Profile';
 import EditProfile from '../user/profile/EditProfile';
 import AboutUs from '../user/AboutUs';
+import Articles from '../user/admin/Articles';
 import NewArticle from '../user/admin/NewArticle';
+import NewUser from '../user/admin/NewUser';
 import Messages from '../user/admin/Messages';
+import NewOrder from '../user/admin/NewOrder';
 import Checkout from '../user/Checkout';
 import AppHeader from '../common/AppHeader';
 import NotFound from '../common/NotFound';
@@ -296,10 +299,30 @@ class App extends Component {
                                    render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
                                                                currentUser={this.state.currentUser} {...props} />}>
                             </Route>
+                            <Route path="/articles"
+                                   render={(props) => <Articles isAuthenticated={this.state.isAuthenticated}
+                                                                isAdmin={this.state.isAdmin}
+                                                                currentUser={this.state.currentUser}
+                                                                productsList={this.state.products}
+                                                                searchTerm={this.state.term}
+                                                                handleCategory={this.handleCategory}
+                                                                categoryTerm={this.state.category}
+                                                                handleSearch={this.handleSearch} {...props} />}>
+                            </Route>
                             <Route path="/article/new"
                                    render={(props) => <NewArticle isAuthenticated={this.state.isAuthenticated}
                                                                   isAdmin={this.state.isAdmin}
                                                                   currentUser={this.state.currentUser} {...props} />}>
+                            </Route>
+                            <Route path="/order/new"
+                                   render={(props) => <NewOrder isAuthenticated={this.state.isAuthenticated}
+                                                                isAdmin={this.state.isAdmin}
+                                                                currentUser={this.state.currentUser}
+                                                                productsList={this.state.products} {...props} />}>
+                            </Route>
+                            <Route path="/user/new"
+                                   render={(props) => <NewUser isAuthenticated={this.state.isAuthenticated}
+                                                               isAdmin={this.state.isAdmin} {...props} />}>
                             </Route>
                             <Route path="/admin/messages"
                                    render={(props) => <Messages isAuthenticated={this.state.isAuthenticated}
