@@ -81,8 +81,10 @@ public class ArticleController {
 
         User user = userRepository.findByUsername(orderRequest.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", orderRequest.getUsername()));
+        RoleName roleName = user.getRole().getName();
 
         Order order = new Order();
+        order.setUser(user);
 
         float totalPrice = 0;
         for (ItemRequest itemRequest : orderRequest.getItems()) {
@@ -108,14 +110,15 @@ public class ArticleController {
             item.setSize(size);
             item.setAmount(itemRequest.getQuantity());
             item.setDelivered(false);
-            totalPrice += itemRequest.getPrice() * itemRequest.getQuantity();
+            totalPrice += (roleName == RoleName.ROLE_USER_LEGAL ?
+                    article.getWholesalePrice() : article.getRetailPrice()) *
+                    itemRequest.getQuantity();
             order.getItems().add(item);
         }
 
         order.setTotalPrice(totalPrice);
         order.setPaid(0);
-
-        order.setFromState(user.getRole().getName() != RoleName.ROLE_USER_LEGAL);
+        order.setFromState(roleName != RoleName.ROLE_USER_LEGAL);
 
         orderRepository.save(order);
 

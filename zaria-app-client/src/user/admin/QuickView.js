@@ -17,14 +17,14 @@ class QuickView extends Component{
         this.setState ({
             value: value
         });
-    }
+    };
 
     onChangeChoice = (value) => {
         this.setState ({
             size: value[0],
             color: value[1],
         });
-    }
+    };
 
     displayRender = (labels, selectedOptions) => labels.map((label, i) => {
         const option = selectedOptions[i];
@@ -97,7 +97,7 @@ class QuickView extends Component{
             <Cascader options={values} onChange={this.onChangeChoice} displayRender={this.displayRender}
                       placeholder="Select size and color"/>
             <InputNumber min={1} max={500} defaultValue={1} onChange={this.onChange}/>
-        </div>
+        </div>;
 
         return (
             item != null ?

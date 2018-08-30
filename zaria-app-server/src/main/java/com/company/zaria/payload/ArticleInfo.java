@@ -3,6 +3,7 @@ package com.company.zaria.payload;
 import com.company.zaria.model.Gender;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ArticleInfo {
 
@@ -104,5 +105,18 @@ public class ArticleInfo {
 
     public void setAvailabilities(List<Availability> availabilities) {
         this.availabilities = availabilities;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ArticleInfo articleInfo = (ArticleInfo) o;
+        return Objects.equals(code, articleInfo.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code);
     }
 }

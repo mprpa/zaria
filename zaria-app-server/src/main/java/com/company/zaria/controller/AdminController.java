@@ -20,9 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -49,6 +47,12 @@ public class AdminController {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -228,6 +232,161 @@ public class AdminController {
         userRepository.save(user);
 
         return ResponseEntity.ok().body(new ApiResponse(true, "User added!"));
+    }
+
+    @GetMapping("/allLegalUsers")
+    public List<UserSummary> getAllLegalUsers() {
+        List<UserSummary> userSummaries = new ArrayList<>();
+
+        Role userRole = roleRepository.findByName(RoleName.ROLE_USER_LEGAL)
+                .orElseThrow(() -> new AppException("User Role not set."));
+        List<User> users = userRepository.findByRole(userRole);
+
+        for(User user : users) {
+            UserSummary userSummary = new UserSummary(user.getId(),
+                    user.getUsername(),
+                    user.getName(),
+                    user.getAddress(),
+                    user.getPhoneNumber(),
+                    false,
+                    true);
+            userSummary.setTin(user.getTin());
+
+            userSummaries.add(userSummary);
+        }
+
+        return userSummaries;
+    }
+
+    @GetMapping("/allOrders")
+    public AllOrders getAllOrders() {
+        AllOrders allOrders = new AllOrders();
+
+        List<Order> orders = orderRepository.findAll();
+        List<PastOrder> pastOrders = new ArrayList<>();
+        for(Order order : orders) {
+            if(order.getPaid() >= order.getTotalPrice()) {
+                continue;
+            }
+
+            User user = order.getUser();
+            UserSummary userSummary = new UserSummary(user.getId(),
+                    user.getUsername(),
+                    user.getName(),
+                    user.getAddress(),
+                    user.getPhoneNumber(),
+                    false,
+                    user.getRole().getName() == RoleName.ROLE_USER_LEGAL);
+            userSummary.setTin(user.getTin());
+
+            PastOrder pastOrder = new PastOrder();
+            pastOrder.setUser(userSummary);
+            pastOrder.setId(order.getId());
+            pastOrder.setCreationDateTime(order.getCreatedAt());
+            pastOrder.setTotalPrice(order.getTotalPrice());
+            pastOrder.setPaid(order.getPaid());
+            pastOrder.setFromState(order.isFromState());
+
+            List<PastOrderItem> pastOrderItems = new ArrayList<>();
+            for(OrderItem item : order.getItems()) {
+                PastOrderItem pastOrderItem = new PastOrderItem();
+                pastOrderItem.setId(item.getId());
+                pastOrderItem.setUser(userSummary.getName());
+                pastOrderItem.setTin(userSummary.getTin());
+                pastOrderItem.setImage(item.getArticle().getImage().getPath());
+                pastOrderItem.setName(item.getArticle().getName());
+                pastOrderItem.setCode(item.getArticle().getCode());
+                pastOrderItem.setColor(item.getColor().getCode());
+                pastOrderItem.setSize(item.getSize().name());
+                pastOrderItem.setPrice(user.getRole().getName() == RoleName.ROLE_USER_LEGAL ?
+                        item.getArticle().getWholesalePrice() :
+                        item.getArticle().getRetailPrice());
+                pastOrderItem.setQuantity(item.getAmount());
+                pastOrderItems.add(pastOrderItem);
+            }
+            pastOrder.setItems(pastOrderItems);
+            pastOrders.add(pastOrder);
+        }
+
+        List<PastOrder> pastLegalOrders = pastOrders.stream().filter(pastOrder -> !pastOrder.isFromState()).collect(Collectors.toList());
+        allOrders.setLegalUserOrders(pastLegalOrders);
+        allOrders.setOrderFromState(pastOrders.stream().filter(pastOrder -> pastOrder.isFromState()).collect(Collectors.toList()));
+
+        Map<UserSummary, List<PastOrder>> ordersByUser = new HashMap<>();
+        for(PastOrder pastOrder : pastLegalOrders) {
+            List<PastOrder> userOrders;
+            if(ordersByUser.containsKey(pastOrder.getUser())) {
+                userOrders = ordersByUser.get(pastOrder.getUser());
+            } else {
+                userOrders = new ArrayList<>();
+            }
+            userOrders.add(pastOrder);
+            ordersByUser.put(pastOrder.getUser(), userOrders);
+        }
+        List<OrdersByUser> ordersByUserList = ordersByUser.entrySet()
+                .stream()
+                .map(e -> new OrdersByUser(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
+        allOrders.setOrdersByUser(ordersByUserList);
+
+        Map<ArticleInfo, List<PastOrderItem>> ordersByArticle = new HashMap<>();
+        for(PastOrder pastOrder : pastLegalOrders) {
+            for(PastOrderItem pastOrderItem : pastOrder.getItems()) {
+                ArticleInfo articleInfo = new ArticleInfo();
+                articleInfo.setCode(pastOrderItem.getCode());
+                articleInfo.setFabric(articleRepository.findByCode(pastOrderItem.getCode()).getFabric().getComposition());
+                articleInfo.setName(pastOrderItem.getName());
+                articleInfo.setImagePath(pastOrderItem.getImage());
+                List<PastOrderItem> articleOrderItems;
+                if(ordersByArticle.containsKey(articleInfo)) {
+                    articleOrderItems = ordersByArticle.get(articleInfo);
+                } else {
+                    articleOrderItems = new ArrayList<>();
+                }
+                articleOrderItems.add(pastOrderItem);
+                ordersByArticle.put(articleInfo, articleOrderItems);
+            }
+        }
+        List<OrdersByArticle> ordersByArticleList = ordersByArticle.entrySet()
+                .stream()
+                .map(e -> new OrdersByArticle(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
+        allOrders.setOrdersByArticle(ordersByArticleList);
+
+        return allOrders;
+    }
+
+    @GetMapping("/sendArticlesFromState/{orderId}")
+    public ResponseEntity<?> sendArticlesFromState(@PathVariable Long orderId) {
+
+        Order order = orderRepository.getOne(orderId);
+        order.setPaid(order.getTotalPrice());
+        for(OrderItem orderItem : order.getItems()) {
+            orderItem.setDelivered(true);
+        }
+        orderRepository.save(order);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, "Order sent!"));
+    }
+
+    @GetMapping("/updateOrderPaidValue/{orderId}/{value}")
+    public ResponseEntity<?> updateOrderPaidValue(@PathVariable(value = "orderId") Long orderId, @PathVariable(value = "value") int value) {
+
+        Order order = orderRepository.getOne(orderId);
+        order.setPaid(order.getPaid() + value);
+        orderRepository.save(order);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, "Order updated!"));
+    }
+
+    @GetMapping("/deliverItem/{itemId}")
+    public ResponseEntity<?> deliverItem(@PathVariable Long itemId) {
+
+        OrderItem orderItem = orderItemRepository.getOne(itemId);
+        orderItem.setDelivered(true);
+        orderItemRepository.save(orderItem);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, "Item delivered!"));
     }
 
     private String getFileExtension(String fileName) {

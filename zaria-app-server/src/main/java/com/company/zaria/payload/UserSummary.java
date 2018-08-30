@@ -1,5 +1,7 @@
 package com.company.zaria.payload;
 
+import java.util.Objects;
+
 public class UserSummary {
 
     private Long id;
@@ -7,8 +9,12 @@ public class UserSummary {
     private String name;
     private String address;
     private String phone;
+    private String tin;
     private boolean admin;
     private boolean legal;
+
+    public UserSummary() {
+    }
 
     public UserSummary(Long id, String username, String name, String address, String phone, boolean admin, boolean legal) {
         this.id = id;
@@ -63,4 +69,25 @@ public class UserSummary {
     public boolean isLegal() { return legal; }
 
     public void setLegal(boolean legal) { this.legal = legal; }
+
+    public String getTin() {
+        return tin;
+    }
+
+    public void setTin(String tin) {
+        this.tin = tin;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserSummary userSummary = (UserSummary) o;
+        return Objects.equals(id, userSummary.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

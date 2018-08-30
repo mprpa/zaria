@@ -6,7 +6,7 @@ import {
     Switch
 } from 'react-router-dom';
 
-import { getCurrentUser, getNumUnreadMessages, readMessages, getProducts } from '../util/APIUtils';
+import { getCurrentUser, getNumUnreadMessages, readMessages, getProducts, getUsers } from '../util/APIUtils';
 import { ACCESS_TOKEN } from '../constants';
 
 import IndexPage from './IndexPage';
@@ -45,7 +45,8 @@ class App extends Component {
             totalItems: 0,
             totalAmount: 0,
             term: '',
-            category: ''
+            category: '',
+            users: []
         }
         this.handleLogout = this.handleLogout.bind(this);
         this.loadCurrentUser = this.loadCurrentUser.bind(this);
@@ -66,6 +67,19 @@ class App extends Component {
             placement: 'topRight',
             top: 70,
             duration: 3,
+        });
+    }
+
+    getUsers() {
+        getUsers()
+            .then(response => {
+                this.setState({
+                    users: response
+                })
+            }).catch(error => {
+            this.setState({
+                isLoading: false
+            });
         });
     }
 
@@ -120,6 +134,7 @@ class App extends Component {
         this.loadCurrentUser();
         this.getUnreadMessages();
         this.getProducts();
+        this.getUsers();
     }
 
     // Handle Logout, Set currentUser and isAuthenticated state which will be passed to other components
@@ -318,7 +333,8 @@ class App extends Component {
                                    render={(props) => <NewOrder isAuthenticated={this.state.isAuthenticated}
                                                                 isAdmin={this.state.isAdmin}
                                                                 currentUser={this.state.currentUser}
-                                                                productsList={this.state.products} {...props} />}>
+                                                                productsList={this.state.products}
+                                                                usersList={this.state.users} {...props} />}>
                             </Route>
                             <Route path="/user/new"
                                    render={(props) => <NewUser isAuthenticated={this.state.isAuthenticated}

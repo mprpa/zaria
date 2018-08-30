@@ -192,3 +192,38 @@ export function updateArticleState(articleInfo) {
         body: JSON.stringify(articleInfo)
     });
 }
+
+export function getUsers() {
+    return request({
+        url: API_BASE_URL + "/admin/allLegalUsers",
+        method: 'GET'
+    });
+}
+
+export function getAllOrders() {
+    return request({
+        url: API_BASE_URL + "/admin/allOrders",
+        method: 'GET'
+    });
+}
+
+export function sendArticlesFromState(orderId) {
+    return request({
+        url: API_BASE_URL + "/admin/sendArticlesFromState/" + orderId,
+        method: 'GET'
+    });
+}
+
+export function updateOrderPaidValue(orderId, value) {
+    return request({
+        url: API_BASE_URL + "/admin/updateOrderPaidValue/" + orderId + "/" + value,
+        method: 'GET'
+    });
+}
+
+export function deliverItem(itemId) {
+    return request({
+        url: API_BASE_URL + "/admin/deliverItem/" + itemId,
+        method: 'GET'
+    });
+}
