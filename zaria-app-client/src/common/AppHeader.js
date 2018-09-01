@@ -6,7 +6,7 @@ import {
 import './AppHeader.css';
 import InfiniteScroll from 'react-infinite-scroller';
 import logo from '../logo.png';
-import {Layout, Menu, Dropdown, Icon, Badge, Popover, Button, List, Spin, Avatar, Tag} from 'antd';
+import {Layout, Menu, Dropdown, Icon, Badge, Popover, Button, List, Spin, Avatar, Tag, Alert} from 'antd';
 const Header = Layout.Header;
 const SubMenu = Menu.SubMenu;
     
@@ -17,7 +17,8 @@ class AppHeader extends Component {
             showCart: false,
             cart: this.props.cartItems,
             cartLoading: false,
-            hasMore: true
+            hasMore: true,
+            showFabricNotif : false
         };
 
         this.handleMenuClick = this.handleMenuClick.bind(this);   
@@ -25,7 +26,11 @@ class AppHeader extends Component {
 
     handleCart  = (visible) => {
         this.setState({ showCart: visible });
-    }
+    };
+
+    handleFabricNotif  = (visible) => {
+        this.setState({ showFabricNotif: visible });
+    };
 
     handleInfiniteOnLoad = () => {
         let data = this.state.cart;
@@ -38,7 +43,7 @@ class AppHeader extends Component {
                 loading: false,
             });
         }
-    }
+    };
 
     handleMenuClick({ key }) {
       if(key === "logout") {
@@ -65,6 +70,52 @@ class AppHeader extends Component {
                                 <Icon type="mail" className="nav-icon"/>
                             </Badge>
                         </Link>
+                    </Menu.Item>,
+                    <Menu.Item key="/fabrics">
+                        <Popover
+                            overlayClassName="cart"
+                            placement="bottom"
+                            content={
+                                <div>
+                                    {this.props.fabricInfo == null || this.props.fabricInfo.totalCount === 0 ?
+                                        <Alert
+                                            message="All good"
+                                            description="All fabrics exists enough on state for ordered products."
+                                            type="success"
+                                            showIcon
+                                        /> : null}
+                                    {this.props.fabricInfo != null && this.props.fabricInfo.runningLowCount > 0 ?
+                                        <Alert
+                                            message="Warning"
+                                            description={<div>There are {this.props.fabricInfo.runningLowCount} fabrics
+                                                that are running low on available state.</div>}
+                                            type="warning"
+                                            showIcon
+                                        /> : null}
+                                    {this.props.fabricInfo != null && this.props.fabricInfo.notEnoughCount > 0 ?
+                                        <Alert
+                                            message="Error"
+                                            description={<div>There are {this.props.fabricInfo.notEnoughCount} fabrics
+                                                that there is not enough on state for the ordered products.</div>}
+                                            type="error"
+                                            showIcon
+                                        /> : null}
+                                    <Link to="/fabrics">
+                                        Check states
+                                    </Link>
+                                </div>
+                            }
+                            title="Fabric state notifications"
+                            trigger="click"
+                            visible={this.state.showFabricNotif}
+                            onVisibleChange={this.handleFabricNotif}
+                        >
+                            <Badge
+                                style={{ backgroundColor: this.props.fabricInfo != null && this.props.fabricInfo.notEnoughCount > 0 ? '#f5222d' : '#faad14'}}
+                                count={this.props.fabricInfo != null ? this.props.fabricInfo.totalCount : 0}>
+                                <Icon type="share-alt" className="nav-icon"/>
+                            </Badge>
+                        </Popover>
                     </Menu.Item>,
                     <Menu.Item key="/articles">
                         <Link to="/articles">

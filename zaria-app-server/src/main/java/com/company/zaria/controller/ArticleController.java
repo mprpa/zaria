@@ -4,6 +4,7 @@ import com.company.zaria.exception.ResourceNotFoundException;
 import com.company.zaria.model.*;
 import com.company.zaria.payload.*;
 import com.company.zaria.repository.*;
+import com.company.zaria.util.AppConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/article")
@@ -33,6 +36,9 @@ public class ArticleController {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private FabricStateRepository fabricStateRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
 
@@ -114,6 +120,10 @@ public class ArticleController {
                     article.getWholesalePrice() : article.getRetailPrice()) *
                     itemRequest.getQuantity();
             order.getItems().add(item);
+
+            FabricState fabricState = fabricStateRepository.getByFabricAndColor(article.getFabric(), color);
+            float fabric = article.getWeight() * AppConstants.SIZE_FLOAT_MAP.get(size);
+            fabricState.setReserved(fabricState.getReserved() + fabric);
         }
 
         order.setTotalPrice(totalPrice);

@@ -6,7 +6,7 @@ import {
     Switch
 } from 'react-router-dom';
 
-import { getCurrentUser, getNumUnreadMessages, readMessages, getProducts, getUsers } from '../util/APIUtils';
+import { getCurrentUser, getNumUnreadMessages, readMessages, getProducts, getUsers, getFabricInfo } from '../util/APIUtils';
 import { ACCESS_TOKEN } from '../constants';
 
 import IndexPage from './IndexPage';
@@ -27,6 +27,7 @@ import NotFound from '../common/NotFound';
 import LoadingIndicator from '../common/LoadingIndicator';
 
 import { Layout, notification } from 'antd';
+import Fabrics from "../user/admin/Fabrics";
 const { Content } = Layout;
 
 class App extends Component {
@@ -46,7 +47,8 @@ class App extends Component {
             totalAmount: 0,
             term: '',
             category: '',
-            users: []
+            users: [],
+            fabricInfo: null
         }
         this.handleLogout = this.handleLogout.bind(this);
         this.loadCurrentUser = this.loadCurrentUser.bind(this);
@@ -62,6 +64,7 @@ class App extends Component {
         this.handleRemoveProduct = this.handleRemoveProduct.bind(this);
         this.handleCheckout = this.handleCheckout.bind(this);
         this.clearCart = this.clearCart.bind(this);
+        this.getFabricNotifInfo = this.getFabricNotifInfo.bind(this);
 
         notification.config({
             placement: 'topRight',
@@ -130,11 +133,26 @@ class App extends Component {
         });
     }
 
+
+    getFabricNotifInfo() {
+        getFabricInfo()
+            .then(response => {
+                this.setState({
+                    fabricInfo: response
+                })
+            }).catch(error => {
+            this.setState({
+                isLoading: false
+            });
+        });
+    }
+
     componentWillMount() {
         this.loadCurrentUser();
         this.getUnreadMessages();
         this.getProducts();
         this.getUsers();
+        this.getFabricNotifInfo();
     }
 
     // Handle Logout, Set currentUser and isAuthenticated state which will be passed to other components
@@ -283,6 +301,7 @@ class App extends Component {
                            cartItems={this.state.cart}
                            removeProduct={this.handleRemoveProduct}
                            onCheckout={this.handleCheckout}
+                           fabricInfo={this.state.fabricInfo}
                 />
 
                 <Content className="app-content">
@@ -313,6 +332,10 @@ class App extends Component {
                             <Route path="/users/:username"
                                    render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
                                                                currentUser={this.state.currentUser} {...props} />}>
+                            </Route>
+                            <Route path="/fabrics"
+                                   render={(props) => <Fabrics isAuthenticated={this.state.isAuthenticated}
+                                                               isAdmin={this.state.isAdmin} {...props} />}>
                             </Route>
                             <Route path="/articles"
                                    render={(props) => <Articles isAuthenticated={this.state.isAuthenticated}

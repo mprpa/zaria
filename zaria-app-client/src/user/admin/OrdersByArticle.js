@@ -74,7 +74,8 @@ class OrderItemsForArticle extends Component{
 
 const divStyle = {
     float: "right",
-    margin: "0 20px 0 0"
+    margin: "0 20px 0 0",
+    color: "white"
 };
 
 class OrdersByArticle extends Component{
@@ -108,9 +109,10 @@ class OrdersByArticle extends Component{
                 });
                 let panel = (
                     <Panel header={<div>
-                                        <Tag color={color}>color</Tag>
+                                        <Tag color={color}></Tag>
                                         <div style={divStyle}> Total orders: {totalOrders1}</div>
                                     </div>}
+                           style={{background: color}}
                            key={i + color}>
                         <Collapse accordion>
                             {children}

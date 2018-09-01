@@ -227,3 +227,24 @@ export function deliverItem(itemId) {
         method: 'GET'
     });
 }
+
+export function getAllFabrics() {
+    return request({
+        url: API_BASE_URL + "/admin/allFabrics",
+        method: 'GET'
+    });
+}
+
+export function updateFabricState(fabricStateId, value) {
+    return request({
+        url: API_BASE_URL + "/admin/updateFabricState/" + fabricStateId + "/" + value,
+        method: 'GET'
+    });
+}
+
+export function getFabricInfo() {
+    return request({
+        url: API_BASE_URL + "/admin/getFabricInfo",
+        method: 'GET'
+    });
+}

@@ -26,8 +26,9 @@ public class FabricState extends DateAudit {
     @JoinColumn(name = "color_id", nullable = false)
     private Color color;
 
-    @NotBlank
     private float amount;
+
+    private float reserved;
 
     public FabricState() {
     }
@@ -64,4 +65,11 @@ public class FabricState extends DateAudit {
         this.amount = amount;
     }
 
+    public float getReserved() {
+        return reserved;
+    }
+
+    public void setReserved(float reserved) {
+        this.reserved = reserved;
+    }
 }

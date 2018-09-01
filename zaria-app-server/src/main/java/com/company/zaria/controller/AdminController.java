@@ -4,6 +4,7 @@ import com.company.zaria.exception.AppException;
 import com.company.zaria.model.*;
 import com.company.zaria.payload.*;
 import com.company.zaria.repository.*;
+import com.company.zaria.util.AppConstants;
 import com.company.zaria.util.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,9 @@ public class AdminController {
 
     @Autowired
     private OrderItemRepository orderItemRepository;
+
+    @Autowired
+    private FabricStateRepository fabricStateRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -152,6 +156,15 @@ public class AdminController {
 
             fabric.getColors().add(color);
             fabric.setColors(fabric.getColors().stream().distinct().collect(Collectors.toList()));
+
+            if(!fabricStateRepository.existsByFabricAndColor(fabric, color)) {
+                FabricState fabricState = new FabricState();
+                fabricState.setFabric(fabric);
+                fabricState.setColor(color);
+                fabricState.setAmount(0);
+                fabricState.setReserved(0);
+                fabricStateRepository.save(fabricState);
+            }
         }
 
         fabricRepository.save(fabric);
@@ -386,7 +399,73 @@ public class AdminController {
         orderItem.setDelivered(true);
         orderItemRepository.save(orderItem);
 
+        Article article = orderItem.getArticle();
+        FabricState fabricState = fabricStateRepository.getByFabricAndColor(article.getFabric(), orderItem.getColor());
+        float fabric = article.getWeight() * AppConstants.SIZE_FLOAT_MAP.get(orderItem.getSize());
+        fabricState.setReserved(fabricState.getReserved() - fabric);
+        fabricState.setAmount(fabricState.getAmount() - fabric);
+
         return ResponseEntity.ok().body(new ApiResponse(true, "Item delivered!"));
+    }
+
+    @GetMapping("/allFabrics")
+    public List<FabricStateInfo> getAllFabrics() {
+        List<FabricStateInfo> fabricStateInfos = new ArrayList<>();
+
+        List<Fabric> fabrics = fabricRepository.findAll();
+        for(Fabric fabric : fabrics) {
+            FabricStateInfo fabricStateInfo = new FabricStateInfo();
+
+            fabricStateInfo.setId(fabric.getId());
+            fabricStateInfo.setComposition(fabric.getComposition());
+
+            List<FabricColorState> fabricColorStates = new ArrayList<>();
+            for(Color color : fabric.getColors()) {
+                FabricColorState fabricColorState = new FabricColorState();
+                FabricState fabricState = fabricStateRepository.getByFabricAndColor(fabric, color);
+                fabricColorState.setId(fabricState.getId());
+                fabricColorState.setCode(color.getCode());
+                fabricColorState.setAmount(fabricState.getAmount());
+                fabricColorState.setReserved(fabricState.getReserved());
+                fabricColorStates.add(fabricColorState);
+            }
+            fabricStateInfo.setColors(fabricColorStates);
+
+            fabricStateInfos.add(fabricStateInfo);
+        }
+
+        return fabricStateInfos;
+    }
+
+    @GetMapping("/updateFabricState/{fabricStateId}/{value}")
+    public ResponseEntity<?> updateFabricState(@PathVariable(value = "fabricStateId") Long fabricStateId, @PathVariable(value = "value") float value) {
+
+        FabricState fabricState = fabricStateRepository.getOne(fabricStateId);
+        fabricState.setAmount(fabricState.getAmount() + value);
+        fabricStateRepository.save(fabricState);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, "Fabric state updated!"));
+    }
+
+    @GetMapping("/getFabricInfo")
+    public FabricInfo getFabricInfo() {
+        FabricInfo fabricInfo = new FabricInfo();
+        int runningLowCount = 0;
+        int notEnoughCount = 0;
+
+        List<FabricState> fabricStates = fabricStateRepository.findAll();
+        for(FabricState fabricState : fabricStates) {
+            if(fabricState.getReserved() > fabricState.getAmount()) {
+                notEnoughCount++;
+            } else if(fabricState.getAmount() - fabricState.getReserved() <= 5 && fabricState.getAmount() != 0) {
+                runningLowCount++;
+            }
+        }
+
+        fabricInfo.setRunningLowCount(runningLowCount);
+        fabricInfo.setNotEnoughCount(notEnoughCount);
+        fabricInfo.setTotalCount(runningLowCount + notEnoughCount);
+        return fabricInfo;
     }
 
     private String getFileExtension(String fileName) {
