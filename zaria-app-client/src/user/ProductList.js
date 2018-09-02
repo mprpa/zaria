@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import './ProductList.css';
 import QuickView from "./QuickView";
-import {Layout, List, Card, Input} from 'antd';
+import {Layout, List, Card, Input, Radio, Checkbox} from 'antd';
 const { Header, Content } = Layout;
 const { Search } = Input
+const RadioGroup = Radio.Group;
 
 class ProductList extends Component {
 
@@ -22,26 +23,42 @@ class ProductList extends Component {
                 selectedItem : item
             });
         }
-    }
+    };
 
     handleCancel = () => {
         this.setState({
             visible: false,
             selectedItem : null
         });
-    }
+    };
 
     render(){
         let productsData;
         let term = this.props.searchTerm;
+        let category = this.props.categoryTerm;
+        let categoryChild = this.props.categoryChild;
         let x;
+
+        function filterCategory(category){
+            return function(x){
+                return category === "All" ? true : x.gender === category;
+            }
+        }
+
+        function filterCategoryChild(child){
+            return function(x){
+                return x.children === child;
+            }
+        }
 
         function searchingFor(term){
             return function(x){
                 return x.name.toLowerCase().includes(term.toLowerCase()) || !term;
             }
         }
-        productsData = this.props.productsList.filter(searchingFor(term));
+        productsData = this.props.productsList.filter(filterCategory(category));
+        productsData = productsData.filter(filterCategoryChild(categoryChild));
+        productsData = productsData.filter(searchingFor(term));
 
         return(
             <Layout>
@@ -52,6 +69,12 @@ class ProductList extends Component {
                     onChange={this.props.handleSearch}
                     enterButton
                     />
+                    <RadioGroup onChange={this.props.handleCategory} value={this.props.categoryTerm}>
+                        <Radio value="All">All</Radio>
+                        <Radio value="MALE">Male</Radio>
+                        <Radio value="FEMALE">Female</Radio>
+                    </RadioGroup>
+                    <Checkbox onChange={this.props.handleCategoryChild}>Children</Checkbox>
                 </Header>
                 <Content>
                     <List

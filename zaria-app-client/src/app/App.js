@@ -46,7 +46,8 @@ class App extends Component {
             totalItems: 0,
             totalAmount: 0,
             term: '',
-            category: '',
+            category: 'All',
+            categoryChild: false,
             users: [],
             fabricInfo: null
         }
@@ -57,6 +58,7 @@ class App extends Component {
         this.handleReadMessages = this.handleReadMessages.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.handleCategory = this.handleCategory.bind(this);
+        this.handleCategoryChild = this.handleCategoryChild.bind(this);
         this.handleAddToCart = this.handleAddToCart.bind(this);
         this.sumTotalItems = this.sumTotalItems.bind(this);
         this.sumTotalAmount = this.sumTotalAmount.bind(this);
@@ -207,7 +209,9 @@ class App extends Component {
     // Filter by Category
     handleCategory(event){
         this.setState({category: event.target.value});
-        console.log(this.state.category);
+    }
+    handleCategoryChild(event){
+        this.setState({categoryChild: event.target.checked});
     }
     // Add to Cart
     handleAddToCart(selectedProducts){
@@ -240,7 +244,7 @@ class App extends Component {
         cart.splice(index, 1);
         this.setState({
             cart: cart
-        })
+        });
         this.sumTotalItems(this.state.cart);
         this.sumTotalAmount(this.state.cart);
         e.preventDefault();
@@ -315,7 +319,9 @@ class App extends Component {
                                                                  productsList={this.state.products}
                                                                  searchTerm={this.state.term}
                                                                  handleCategory={this.handleCategory}
+                                                                 handleCategoryChild={this.handleCategoryChild}
                                                                  categoryTerm={this.state.category}
+                                                                 categoryChild={this.state.categoryChild}
                                                                  addToCart={this.handleAddToCart}
                                                                  handleSearch={this.handleSearch} {...props} />}>
                             </Route>

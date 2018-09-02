@@ -2,6 +2,14 @@
     background: rgba(233, 226, 210, 0);
 }
 
+.content-layout-header .ant-input-search {
+    width: 60%;
+}
+
+.content-layout-header .ant-radio-group {
+    padding-left: 20px;
+}
+
 /* Product */
 
 .product-image-actions {
