@@ -50,7 +50,7 @@ class App extends Component {
             categoryChild: false,
             users: [],
             fabricInfo: null
-        }
+        };
         this.handleLogout = this.handleLogout.bind(this);
         this.loadCurrentUser = this.loadCurrentUser.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
@@ -256,7 +256,7 @@ class App extends Component {
         });
     }
     sumTotalItems(){
-        let total = 0;
+        let total;
         let cart = this.state.cart;
         total = cart.length;
         this.setState({
@@ -266,8 +266,8 @@ class App extends Component {
     sumTotalAmount(){
         let total = 0;
         let cart = this.state.cart;
-        for (var i=0; i<cart.length; i++) {
-            total += cart[i].price * parseInt(cart[i].quantity);
+        for (let i=0; i<cart.length; i++) {
+            total += cart[i].price * parseInt(cart[i].quantity, 10);
         }
         this.setState({
             totalAmount: total
@@ -350,7 +350,9 @@ class App extends Component {
                                                                 productsList={this.state.products}
                                                                 searchTerm={this.state.term}
                                                                 handleCategory={this.handleCategory}
+                                                                handleCategoryChild={this.handleCategoryChild}
                                                                 categoryTerm={this.state.category}
+                                                                categoryChild={this.state.categoryChild}
                                                                 handleSearch={this.handleSearch} {...props} />}>
                             </Route>
                             <Route path="/article/new"

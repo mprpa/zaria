@@ -102,7 +102,7 @@ class NewOrder extends Component {
             const orderInfo = {
                 username: this.state.user,
                 items: this.state.order
-            }
+            };
             placeOrder(orderInfo)
                 .then(response => {
                     notification.success({
@@ -122,7 +122,7 @@ class NewOrder extends Component {
                 description: 'Fill or fields or delete them!'
             });
         }
-    }
+    };
 
     handleSubmit = (e) => {
         e.preventDefault();
@@ -142,7 +142,7 @@ class NewOrder extends Component {
 
             let options = [];
             this.props.usersList.forEach(function (user) {
-                let option = <Option key={user.username} value={user.username}>{user.name}, {user.tin}</Option>
+                let option = <Option key={user.username} value={user.username}>{user.name}, {user.tin}</Option>;
                 options.push(option);
             });
             let values = [];

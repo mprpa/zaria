@@ -3,7 +3,7 @@ import './ProductList.css';
 import QuickView from "./QuickView";
 import {Layout, List, Card, Input, Radio, Checkbox} from 'antd';
 const { Header, Content } = Layout;
-const { Search } = Input
+const { Search } = Input;
 const RadioGroup = Radio.Group;
 
 class ProductList extends Component {
@@ -37,7 +37,6 @@ class ProductList extends Component {
         let term = this.props.searchTerm;
         let category = this.props.categoryTerm;
         let categoryChild = this.props.categoryChild;
-        let x;
 
         function filterCategory(category){
             return function(x){
@@ -78,7 +77,7 @@ class ProductList extends Component {
                 </Header>
                 <Content>
                     <List
-                        grid={{gutter: 1, xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 3}}
+                        grid={{gutter: 1, xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 4}}
                         pagination={{
                             onChange: (page) => {
                                 console.log(page);
@@ -87,7 +86,7 @@ class ProductList extends Component {
                         }}
                         dataSource={productsData}
                         renderItem={item => (
-                            <a href="#" onClick={(event) => this.showModal(event, item)}>
+                            <a style={{padding: 0}} onClick={(event) => this.showModal(event, item)}>
                                 <List.Item
                                     key={item.code}>
                                     <Card

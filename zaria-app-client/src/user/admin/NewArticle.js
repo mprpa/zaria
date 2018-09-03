@@ -60,7 +60,7 @@ class NewArticle extends Component {
             colors: colors,
             image: null,
             selectedFile: null
-        }
+        };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSwitchChange = this.handleSwitchChange.bind(this);
         this.handleImageChange = this.handleImageChange.bind(this);
@@ -97,11 +97,10 @@ class NewArticle extends Component {
                 validateStatus: 'success'
             }
         })
-    }
+    };
 
     getColorById(colorId) {
-        var arr = this.state.colors.find(color => color.id === colorId);
-        return arr;
+        return this.state.colors.find(color => color.id === colorId);
     }
 
     getSelectedColors() {
@@ -110,8 +109,7 @@ class NewArticle extends Component {
 
     handleColorClick(colorId) {
         let color = this.getColorById(colorId);
-        let selected = !color.selected;
-        color.selected = selected;
+        color.selected = !color.selected;
         this.forceUpdate();
     }
 
@@ -140,8 +138,8 @@ class NewArticle extends Component {
                     message: 'Zaria fashion',
                     description: response.message,
                 });
-                var messageParts = response.message.split(' ');
-                var id = messageParts[messageParts.length - 1].split('!')[0];
+                let messageParts = response.message.split(' ');
+                let id = messageParts[messageParts.length - 1].split('!')[0];
                 const articleRequest = {
                     code: this.state.code.value,
                     name: this.state.name.value,
@@ -177,7 +175,7 @@ class NewArticle extends Component {
     }
 
     isFormInvalid() {
-        var colorsSuccess = this.getSelectedColors().length > 0;
+        let colorsSuccess = this.getSelectedColors().length > 0;
         return !(this.state.code.validateStatus === 'success' &&
             this.state.name.validateStatus === 'success' &&
             this.state.gender.validateStatus === 'success' &&
@@ -193,11 +191,11 @@ class NewArticle extends Component {
     handleImageChange = (event) => {
         this.setState({
             image: URL.createObjectURL(event.target.files[0])
-        })
+        });
         this.setState({
             selectedFile: event.target.files[0]
         })
-    }
+    };
 
     render() {
 
@@ -334,7 +332,7 @@ class NewArticle extends Component {
                                 <Icon type="upload"/> Upload Image
                             </label>
                             <input type="file" id="file-upload" style={{display: "none"}} onChange={this.handleImageChange}/>
-                            {this.state.image ? <img src={this.state.image} className="article-image"/> : null}
+                            {this.state.image ? <img src={this.state.image} alt={this.state.image} className="article-image"/> : null}
                         </FormItem>
                         <FormItem className="article-form-row">
                             <Button type="primary"
@@ -361,7 +359,7 @@ class NewArticle extends Component {
             validateStatus: 'success',
             errorMsg: null
         }
-    }
+    };
 
     validateCodeAvailability() {
         const codeValue = this.state.code.value;
@@ -427,7 +425,7 @@ class NewArticle extends Component {
             validateStatus: 'success',
             errorMsg: null
         }
-    }
+    };
 
     validateRetailPrice = (retailPrice) => {
         if(!retailPrice) {
@@ -441,7 +439,7 @@ class NewArticle extends Component {
             validateStatus: 'success',
             errorMsg: null
         }
-    }
+    };
 
     validateWholesalePrice = (wholesalePrice) => {
         if(!wholesalePrice) {
@@ -455,7 +453,7 @@ class NewArticle extends Component {
             validateStatus: 'success',
             errorMsg: null
         }
-    }
+    };
 
     validateWeight = (weight) => {
         if(!weight) {
@@ -469,7 +467,7 @@ class NewArticle extends Component {
             validateStatus: 'success',
             errorMsg: null
         }
-    }
+    };
 
     validateFabric = (fabric) => {
         if(!fabric) {

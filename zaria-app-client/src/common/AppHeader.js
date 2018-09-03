@@ -114,27 +114,32 @@ class AppHeader extends Component {
                                 style={{ backgroundColor: this.props.fabricInfo != null && this.props.fabricInfo.notEnoughCount > 0 ? '#f5222d' : '#faad14'}}
                                 count={this.props.fabricInfo != null ? this.props.fabricInfo.totalCount : 0}>
                                 <Icon type="share-alt" className="nav-icon"/>
+                                <span style={{fontSize: "10px"}}>Fabrics</span>
                             </Badge>
                         </Popover>
                     </Menu.Item>,
                     <Menu.Item key="/articles">
                         <Link to="/articles">
                             <Icon type="tags-o" className="nav-icon"/>
+                            <span style={{fontSize: "10px"}}>Articles</span>
                         </Link>
                     </Menu.Item>,
                     <Menu.Item key="/article/new">
                         <Link to="/article/new">
                             <Icon type="file-add" className="nav-icon"/>
+                            <span style={{fontSize: "10px"}}>New article</span>
                         </Link>
                     </Menu.Item>,
                     <Menu.Item key="/order/new">
                         <Link to="/order/new">
                             <Icon type="folder-add" className="nav-icon"/>
+                            <span style={{fontSize: "10px"}}>New order</span>
                         </Link>
                     </Menu.Item>,
                     <Menu.Item key="/user/new">
                         <Link to="/user/new">
                             <Icon type="user-add" className="nav-icon"/>
+                            <span style={{fontSize: "10px"}}>New user</span>
                         </Link>
                     </Menu.Item>,
                     <Menu.Item key="logout"
@@ -168,7 +173,7 @@ class AppHeader extends Component {
                                                 renderItem={item => (
                                                     <List.Item
                                                         key={item.id}
-                                                        actions={[<a className="product-remove" href="#" onClick={this.props.removeProduct.bind(this, item.id)}>×</a>]}
+                                                        actions={[<a className="product-remove" onClick={this.props.removeProduct.bind(this, item.id)}>×</a>]}
                                                     >
                                                         <List.Item.Meta
                                                             avatar={<Avatar src={process.env.PUBLIC_URL + item.image.substring(63)} />}

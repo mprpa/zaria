@@ -110,9 +110,6 @@ class OrdersForUser extends Component{
 }
 
 class OrdersByUsers extends Component{
-    constructor(props){
-        super(props);
-    }
 
     render () {
         let panels = [];

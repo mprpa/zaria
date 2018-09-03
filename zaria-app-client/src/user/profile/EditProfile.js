@@ -34,7 +34,7 @@ class EditProfile extends Component {
             phoneNumber:  {
                 value: ''
             }
-        }
+        };
         this.loadUserProfile = this.loadUserProfile.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -270,7 +270,7 @@ class EditProfile extends Component {
                 errorMsg: null,
             };
         }
-    }
+    };
 
     validatePhoneNumber = (phoneNumber) => {
         if(phoneNumber.length < PHONENUM_MIN_LENGTH) {
@@ -296,7 +296,7 @@ class EditProfile extends Component {
                 errorMsg: null,
             };
         }
-    }
+    };
 
     validatePassword = (password) => {
         if(password.length < PASSWORD_MIN_LENGTH) {

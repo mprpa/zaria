@@ -55,7 +55,7 @@ class QuickView extends Component{
             this.props.onUpdate(this.state.selectedProduct);
             this.props.onCancel();
         })
-    }
+    };
 
     render() {
         const {visible, onCancel, item} = this.props;

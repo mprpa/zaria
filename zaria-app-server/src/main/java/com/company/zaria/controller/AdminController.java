@@ -156,7 +156,16 @@ public class AdminController {
 
             fabric.getColors().add(color);
             fabric.setColors(fabric.getColors().stream().distinct().collect(Collectors.toList()));
+        }
 
+        fabricRepository.save(fabric);
+
+        article.setFabric(fabric);
+        article.setImage(imageRepository.getById(newArticleRequest.getImageId()));
+
+        articleRepository.save(article);
+
+        for(Color color : fabric.getColors()) {
             if(!fabricStateRepository.existsByFabricAndColor(fabric, color)) {
                 FabricState fabricState = new FabricState();
                 fabricState.setFabric(fabric);
@@ -166,13 +175,6 @@ public class AdminController {
                 fabricStateRepository.save(fabricState);
             }
         }
-
-        fabricRepository.save(fabric);
-
-        article.setFabric(fabric);
-        article.setImage(imageRepository.getById(newArticleRequest.getImageId()));
-
-        articleRepository.save(article);
 
         return ResponseEntity.ok().body(new ApiResponse(true, "Article created successfully!"));
     }

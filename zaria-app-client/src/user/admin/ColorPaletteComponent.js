@@ -4,9 +4,6 @@ import ColorPaletteItemComponent from './ColorPaletteItemComponent';
 require('./ColorPalette.css');
 
 class ColorPaletteComponent extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         return (

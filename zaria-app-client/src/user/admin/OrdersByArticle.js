@@ -79,9 +79,6 @@ const divStyle = {
 };
 
 class OrdersByArticle extends Component{
-    constructor(props){
-        super(props);
-    }
 
     render () {
         let panels = [];
@@ -109,7 +106,7 @@ class OrdersByArticle extends Component{
                 });
                 let panel = (
                     <Panel header={<div>
-                                        <Tag color={color}></Tag>
+                                        <Tag color={color}/>
                                         <div style={divStyle}> Total orders: {totalOrders1}</div>
                                     </div>}
                            style={{background: color}}

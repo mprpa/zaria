@@ -50,7 +50,7 @@ class Fabrics extends Component{
                 .then(response => {
                     let fabric = this.state.fabrics.find(obj => {
                         return obj.id === fabricId
-                    })
+                    });
                     let updatedOrders = fabric.colors.filter((el) => {
                         if(el.id === stateId) {
                             el.amount = el.amount + Number(value);

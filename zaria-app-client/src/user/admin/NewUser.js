@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { addNewUser } from '../../util/APIUtils';
 import '../signup/Signup.css';
-import { Link } from 'react-router-dom';
 import {
     NAME_MIN_LENGTH, NAME_MAX_LENGTH,
     ADDRESS_MIN_LENGTH, ADDRESS_MAX_LENGTH,
@@ -29,7 +28,7 @@ class NewUser extends Component {
             tin : {
                 value: ''
             }
-        }
+        };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.isFormInvalid = this.isFormInvalid.bind(this);
@@ -183,7 +182,7 @@ class NewUser extends Component {
                 errorMsg: null,
             };
         }
-    }
+    };
 
     validateAddress= (address) => {
         if(address.length < ADDRESS_MIN_LENGTH) {
@@ -202,7 +201,7 @@ class NewUser extends Component {
                 errorMsg: null,
             };
         }
-    }
+    };
 
     validatePhoneNumber = (phoneNumber) => {
         if(phoneNumber.length < PHONENUM_MIN_LENGTH) {
@@ -228,7 +227,7 @@ class NewUser extends Component {
                 errorMsg: null,
             };
         }
-    }
+    };
 
     validateTin = (tin) => {
         if(tin.length < TIN_MIN_LENGTH) {

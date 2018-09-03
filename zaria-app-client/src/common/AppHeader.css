@@ -27,12 +27,12 @@
   }
   
   .app-menu > li {
-    padding: 0 20px;
+    padding: 0 15px;
   }
 
   .app-menu > li > a {
-    padding: 0 20px;
-    margin: 0 -20px;
+    padding: 0 15px;
+    margin: 0 -15px;
   }
 
   .app-menu > li > a > i {
@@ -40,6 +40,10 @@
   }
 
   .profile-dropdown-menu {
+    min-width: 180px;
+  }
+
+  .admin-dropdown-menu {
     min-width: 180px;
   }
 

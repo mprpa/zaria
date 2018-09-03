@@ -21,7 +21,7 @@ class AboutUs extends Component {
             message:  {
                 value: ''
             }
-        }
+        };
         this.loadUserProfile = this.loadUserProfile.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -148,7 +148,7 @@ class AboutUs extends Component {
             validateStatus: 'success',
             errorMsg: null
         }
-    }
+    };
 
     validateName = (name) => {
         if(!name) {
@@ -162,7 +162,7 @@ class AboutUs extends Component {
             validateStatus: 'success',
             errorMsg: null
         }
-    }
+    };
 
     validateMessage = (message) => {
         if(!message) {
@@ -176,7 +176,7 @@ class AboutUs extends Component {
             validateStatus: 'success',
             errorMsg: null
         }
-    }
+    };
 
     render() {
         return (

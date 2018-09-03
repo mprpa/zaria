@@ -4,9 +4,6 @@ import ProductList from '../user/ProductList';
 import AdminIndex from '../user/admin/AdminIndex';
 
 class IndexPage extends Component{
-    constructor(props){
-        super(props);
-    }
 
     render () {
 

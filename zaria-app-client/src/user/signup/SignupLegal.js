@@ -41,7 +41,7 @@ class SignupLegal extends Component {
             tin : {
                 value: ''
             }
-        }
+        };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.validateUsernameAvailability = this.validateUsernameAvailability.bind(this);
@@ -245,7 +245,7 @@ class SignupLegal extends Component {
                 errorMsg: null,
             };
         }
-    }
+    };
 
     validateAddress= (address) => {
         if(address.length < ADDRESS_MIN_LENGTH) {
@@ -264,7 +264,7 @@ class SignupLegal extends Component {
                 errorMsg: null,
             };
         }
-    }
+    };
 
     validatePhoneNumber = (phoneNumber) => {
         if(phoneNumber.length < PHONENUM_MIN_LENGTH) {
@@ -290,7 +290,7 @@ class SignupLegal extends Component {
                 errorMsg: null,
             };
         }
-    }
+    };
 
     validateTin = (tin) => {
         if(tin.length < TIN_MIN_LENGTH) {
@@ -316,7 +316,7 @@ class SignupLegal extends Component {
                 errorMsg: null,
             };
         }
-    }
+    };
 
     validateEmail = (email) => {
         if(!email) {
@@ -345,7 +345,7 @@ class SignupLegal extends Component {
             validateStatus: null,
             errorMsg: null
         }
-    }
+    };
 
     validateUsername = (username) => {
         if(username.length < USERNAME_MIN_LENGTH) {
@@ -364,7 +364,7 @@ class SignupLegal extends Component {
                 errorMsg: null
             }
         }
-    }
+    };
 
     validateUsernameAvailability() {
         // First check for client side errors in username

@@ -7,12 +7,12 @@ const FormItem = Form.Item;
 
 const action_btn = {
     border: "none"
-}
+};
 
 const CreateAnswerForm = Form.create()(
     class extends React.Component {
         render() {
-            const { visible, onCancel, onSend, id, form } = this.props;
+            const { visible, onCancel, onSend, form } = this.props;
             const { getFieldDecorator } = form;
             return (
                 <Modal
@@ -57,14 +57,14 @@ class Messages extends Component {
             visible: true,
             selectedIndex : index
         });
-    }
+    };
 
     handleCancel = () => {
         this.setState({
             visible: false,
             selectedIndex : -1
         });
-    }
+    };
 
     handleSend = () => {
         const form = this.formRef.props.form;
@@ -101,11 +101,11 @@ class Messages extends Component {
                 messagesList: this.state.messagesList.filter((message) => message.id !== id)
             });
         });
-    }
+    };
 
     saveFormRef = (formRef) => {
         this.formRef = formRef;
-    }
+    };
 
     render() {
 

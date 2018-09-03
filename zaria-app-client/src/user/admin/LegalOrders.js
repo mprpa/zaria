@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import {Avatar, List, notification, Tag} from "antd";
+import {Avatar, List, Tag} from "antd";
 import {formatDate} from "../../util/Helpers";
 
 class LegalOrders extends Component{
-    constructor(props){
-        super(props);
-    }
 
     render () {
         return (

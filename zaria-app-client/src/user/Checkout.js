@@ -109,7 +109,7 @@ class Checkout extends Component{
         this.setState({
             [inputName]: inputValue
         })
-    }
+    };
 
     next() {
         const current = this.state.current + 1;
@@ -125,7 +125,7 @@ class Checkout extends Component{
         const orderInfo = {
             username: this.props.currentUser.username,
             items: this.props.cartItems
-        }
+        };
         placeOrder(orderInfo)
             .then(response => {
                 notification.success({
@@ -140,7 +140,7 @@ class Checkout extends Component{
                 description: error.message || 'Sorry! Something went wrong. Please try again!'
             });
         });
-    }
+    };
 
     render() {
         const { current } = this.state;

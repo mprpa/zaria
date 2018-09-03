@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import '../ProductList.css';
 import QuickView from "./QuickView";
-import {Layout, List, Card, Input, notification} from 'antd';
+import {Layout, List, Card, Input, notification, Radio, Checkbox} from 'antd';
 import {updateArticleState} from "../../util/APIUtils";
 const { Header, Content } = Layout;
-const { Search } = Input
+const { Search } = Input;
+const RadioGroup = Radio.Group;
 
 class Articles extends Component {
 
@@ -23,14 +24,14 @@ class Articles extends Component {
                 selectedItem : item
             });
         }
-    }
+    };
 
     handleCancel = () => {
         this.setState({
             visible: false,
             selectedItem : null
         });
-    }
+    };
 
     handleUpdate = (selectedProduct) => {
         const articleInfo = {
@@ -38,7 +39,7 @@ class Articles extends Component {
             size: selectedProduct.size,
             color: selectedProduct.color,
             amount: selectedProduct.quantity,
-        }
+        };
         updateArticleState(articleInfo)
             .then(response => {
                 notification.success({
@@ -51,19 +52,34 @@ class Articles extends Component {
                 description: error.message || 'Sorry! Something went wrong. Please try again!'
             });
         });
-    }
+    };
 
     render(){
         let productsData;
         let term = this.props.searchTerm;
-        let x;
+        let category = this.props.categoryTerm;
+        let categoryChild = this.props.categoryChild;
+
+        function filterCategory(category){
+            return function(x){
+                return category === "All" ? true : x.gender === category;
+            }
+        }
+
+        function filterCategoryChild(child){
+            return function(x){
+                return x.children === child;
+            }
+        }
 
         function searchingFor(term){
             return function(x){
                 return x.name.toLowerCase().includes(term.toLowerCase()) || !term;
             }
         }
-        productsData = this.props.productsList.filter(searchingFor(term));
+        productsData = this.props.productsList.filter(filterCategory(category));
+        productsData = productsData.filter(filterCategoryChild(categoryChild));
+        productsData = productsData.filter(searchingFor(term));
 
         return(
             <Layout>
@@ -74,6 +90,12 @@ class Articles extends Component {
                         onChange={this.props.handleSearch}
                         enterButton
                     />
+                    <RadioGroup onChange={this.props.handleCategory} value={this.props.categoryTerm}>
+                        <Radio value="All">All</Radio>
+                        <Radio value="MALE">Male</Radio>
+                        <Radio value="FEMALE">Female</Radio>
+                    </RadioGroup>
+                    <Checkbox onChange={this.props.handleCategoryChild}>Children</Checkbox>
                 </Header>
                 <Content>
                     <List
@@ -86,7 +108,7 @@ class Articles extends Component {
                         }}
                         dataSource={productsData}
                         renderItem={item => (
-                            <a href="#" onClick={(event) => this.showModal(event, item)}>
+                            <a style={{padding: 0}} onClick={(event) => this.showModal(event, item)}>
                                 <List.Item
                                     key={item.code}>
                                     <Card

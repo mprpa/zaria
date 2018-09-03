@@ -17,14 +17,14 @@ class QuickView extends Component{
         this.setState ({
             value: value
         });
-    }
+    };
 
     onChangeChoice = (value) => {
         this.setState ({
             size: value[0],
             color: value[1],
         });
-    }
+    };
 
     displayRender = (labels, selectedOptions) => labels.map((label, i) => {
         const option = selectedOptions[i];
@@ -52,7 +52,7 @@ class QuickView extends Component{
             this.props.onAddToCart(this.state.selectedProduct);
             this.props.onCancel();
         })
-    }
+    };
 
     render() {
         const { visible, onCancel, item } = this.props;
@@ -61,7 +61,7 @@ class QuickView extends Component{
         let options;
 
         if(item == null || (!this.props.isLegal && item.availabilities == null)) {
-            options = <div>Sorry, not available right now </div>
+            options = <div>Sorry, not available right now </div>;
             available = false;
         } else {
             let values = [];

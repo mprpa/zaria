@@ -1,9 +1,9 @@
-import { API_BASE_URL, POLL_LIST_SIZE, ACCESS_TOKEN } from '../constants';
+import { API_BASE_URL, ACCESS_TOKEN } from '../constants';
 
 const request = (options) => {
     const headers = new Headers({
         'Content-Type': 'application/json',
-    })
+    });
     
     if(localStorage.getItem(ACCESS_TOKEN)) {
         headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
@@ -112,7 +112,7 @@ export function uploadArticleImage(file) {
 
     const defaults = {headers: headers};
 
-    var options = {
+    let options = {
         url: API_BASE_URL + "/admin/upload",
         method: 'POST',
         body: file
